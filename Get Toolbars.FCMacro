@@ -1,0 +1,8 @@
+from PySide2 import QtCore, QtGui, QtWidgets
+mw = FreeCADGui.getMainWindow()
+
+WBList = FreeCADGui.listWorkbenches()
+for WB in WBList:
+    FreeCADGui.activateWorkbench(WB)
+    for tb in mw.findChildren(QtWidgets.QToolBar):
+        tb.show()
