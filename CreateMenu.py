@@ -52,6 +52,42 @@ class ModernMenu(QModernMenu):
         self.createModernMenu()
         self.show()
 
+    def createModernMenu(self):
+        WBList = FreeCADGui.listWorkbenches()
+        for WB in WBList:
+            if WB == 'NoneWorkbench': continue
+            Icon = self.getWBIcon(WBList[WB].Icon)
+            Name = WBList[WB].MenuText
+            self.actions[Name] = WB
+            self.Enabled[Name] = False
+            self.addTab(Icon, Name)
+
+    def selectWorkbench(self):
+        Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
+        index = self._tabBar.currentIndex()
+        tabName = self._tabBar.tabText(index)
+
+        if tabName == 'FreeCAD': return
+        FreeCADGui.activateWorkbench(self.actions[tabName])
+        workbench = FreeCADGui.activeWorkbench()
+
+        for tbb in mw.findChildren(QtWidgets.QToolBar):
+            tbb.hide()
+
+        if self.Enabled[tabName]: return
+        tab = self._tabs[index]
+
+        for toolbar in workbench.listToolbars():
+            if toolbar in Defaults: continue
+            section = tab.addSection(toolbar)
+            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
+            for button in TB[0].actions():
+                if button.text() == '': continue
+                section.addButton(
+                    full=False, icon=button.icon(), title=button.text(), handler=button.triggered,
+                    shortcut=button.shortcut(), statusTip=button.statusTip())
+        self.Enabled[tabName] = True
+
     def getWBIcon(self, icon):
         """
         Return workbench icon
@@ -72,38 +108,3 @@ class ModernMenu(QModernMenu):
         if Icon.isNull():
             Icon = QtGui.QIcon(":/icons/freecad")
         return Icon
-
-    def createModernMenu(self):
-        WBList = FreeCADGui.listWorkbenches()
-        for WB in WBList:
-            if WB == 'NoneWorkbench': continue
-            Icon = self.getWBIcon(WBList[WB].Icon)
-            Name = WBList[WB].MenuText
-            self.actions[Name] = WB
-            self.Enabled[Name] = False
-            self.addTab(Icon, Name)
-
-    def selectWorkbench(self):
-        Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
-        index = self._tabBar.currentIndex()
-        tabName = self._tabBar.tabText(index)
-        if tabName == 'FreeCAD': return
-        FreeCADGui.activateWorkbench(self.actions[tabName])
-        workbench = FreeCADGui.activeWorkbench()
-
-        for tbb in mw.findChildren(QtWidgets.QToolBar):
-            tbb.hide()
-
-        if self.Enabled[tabName]: return
-        tab = self._tabs[index]
-
-        for toolbar in workbench.listToolbars():
-            if toolbar in Defaults: continue
-            section = tab.addSection(toolbar)
-            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
-            for button in TB[0].actions():
-                section.addButton(
-                    full=False, icon=button.icon(), title=button.text(), handler=button.triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip())
-
-        self.Enabled[tabName] = True
