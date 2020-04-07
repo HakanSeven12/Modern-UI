@@ -75,7 +75,6 @@ class ModernMenu(QModernMenu):
 
     def createModernMenu(self):
         WBList = FreeCADGui.listWorkbenches()
-        #self.homeTab()
         for WB in WBList:
             if WB == 'NoneWorkbench': continue
             Icon = self.getWBIcon(WBList[WB].Icon)
@@ -83,18 +82,6 @@ class ModernMenu(QModernMenu):
             self.actions[Name] = WB
             self.Enabled[Name] = False
             self.addTab(Icon, Name)
-    
-    def homeTab(self):
-        homeTools = ['File', 'Workbench', 'Macro', 'View', 'Structure']
-        Icon = QtGui.QIcon(":/icons/freecad")
-        homeTab = self._tabs[0]
-        for toolbar in homeTools:
-            section = homeTab.addSection(toolbar)
-            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
-            for button in TB[0].actions():
-                section.addButton(
-                    full=False, icon=button.icon(), title=button.text(), handler=button.triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip())
 
     def selectWorkbench(self):
         Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']

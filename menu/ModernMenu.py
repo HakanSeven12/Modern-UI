@@ -104,8 +104,6 @@ class QModernMenu(QtWidgets.QWidget):
         # Add a File tab
         self._tabChanging = True
         self._tabBar.addTab( icon, project)
-        #homeTab = self._tabBar.addTab('Home')
-        #self._tabs.append(homeTab)
         self._tabChanging = False
 
     def _currentTabChanged(self, idx):
