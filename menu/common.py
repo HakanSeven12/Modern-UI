@@ -69,9 +69,11 @@ def createButton(icon=None, title=None, handler=None, shortcut=None, statusTip=N
     btn.setSizePolicy(sp)
 
     # icon
+    s=16
     if icon != None:
         icon = QtGui.QIcon(icon)
         btn.setIcon(icon)
+        btn.setIconSize(QtCore.QSize(s, s))
 
     # title
     if title != None:

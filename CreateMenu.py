@@ -50,8 +50,8 @@ class ModernMenu(QModernMenu):
         icon = QtGui.QIcon(":/icons/freecad")
         super(ModernMenu, self).__init__(icon, 'FreeCAD')
         self._tabBar.currentChanged.connect(self.selectWorkbench)
-        self._QFileMenu.addButton(title='Modern Menu Settings',handler=Preferences.showPreferences)
         self.createModernMenu()
+        self.createFileMenu()
         self.show()
 
     def createModernMenu(self):
@@ -64,6 +64,19 @@ class ModernMenu(QModernMenu):
             self.actions[Name] = Enabled
             self.Enabled[Name] = False
             self.addTab(Icon, Name)
+
+    def createFileMenu(self):
+        self._QFileMenu.addButton(
+            title='Modern Settings',handler=Preferences.showPreferences)
+        fileMenu = ['File', 'Workbench', 'Macro', 'View', 'Structure']
+        for toolbar in fileMenu:
+            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
+            for button in TB[0].findChildren(QtWidgets.QToolButton):
+                if button.text() == '': continue
+                self._QFileMenu.addButton(
+                    icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
+                    shortcut=button.shortcut(), statusTip=button.statusTip())
+
 
     def selectWorkbench(self):
         Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
