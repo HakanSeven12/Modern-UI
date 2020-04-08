@@ -66,7 +66,7 @@ class ModernMenu(QModernMenu):
             self.addTab(Icon, Name)
 
     def createFileMenu(self):
-        fileMenu = ['File', 'Workbench', 'Macro']
+        fileMenu = ['File', 'Macro']
         for toolbar in fileMenu:
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
             for button in TB[0].findChildren(QtWidgets.QToolButton):
