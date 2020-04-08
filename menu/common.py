@@ -63,7 +63,7 @@ def createButton(icon=None, title=None, handler=None, shortcut=None, statusTip=N
     btn.setToolTip(tt)
 
     # size
-    btn.setIconSize(QtCore.QSize(32, 32))
+    btn.setIconSize(QtCore.QSize(24, 24))
     sp = btn.sizePolicy()
     sp.setHorizontalPolicy(sp.Expanding)
     btn.setSizePolicy(sp)
