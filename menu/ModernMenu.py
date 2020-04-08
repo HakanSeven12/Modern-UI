@@ -456,7 +456,7 @@ class QModernSection(QtWidgets.QWidget):
         """
         self._addWidget(self, widget, full)
 
-    def addButton(self, full=False, icon=None, title=None, handler=None, shortcut=None, statusTip=None):
+    def addButton(self, full=False, icon=None, title=None, handler=None, shortcut=None, statusTip=None, menu=None):
         """
         Add a button to the end
         """
@@ -497,6 +497,11 @@ class QModernSection(QtWidgets.QWidget):
         if statusTip != None:
             btn.setStatusTip(statusTip)
 
+        # menu
+        if menu != None:
+            btn.setMenu(menu)
+            btn.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+
         self._addWidget(btn, full)
         return btn
 
@@ -512,7 +517,7 @@ class QModernSection(QtWidgets.QWidget):
         """
         return self.addButton(True, icon, title, handler, shortcut, statusTip)
 
-    def addToggleButton(self, full=False, icon=None, title=None, handler=None, shortcut=None, statusTip=None):
+    def addToggleButton(self, full=False, icon=None, title=None, handler=None, shortcut=None, statusTip=None, menu=None):
         """
         Add a togglebutton to the end
         """
@@ -549,6 +554,10 @@ class QModernSection(QtWidgets.QWidget):
         # statusTip
         if statusTip != None:
             btn.setStatusTip(statusTip)
+
+        # menu
+        if menu != None:
+            btn.setMenu(menu)
 
         self._addWidget(btn, full)
         return btn

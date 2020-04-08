@@ -81,11 +81,11 @@ class ModernMenu(QModernMenu):
             if toolbar in Defaults: continue
             section = tab.addSection(toolbar)
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
-            for button in TB[0].actions():
+            for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
                 section.addButton(
-                    full=False, icon=button.icon(), title=button.text(), handler=button.triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip())
+                    full=False, icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
+                    shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
         self.Enabled[tabName] = True
 
     def getWBIcon(self, icon):
