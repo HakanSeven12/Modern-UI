@@ -66,9 +66,7 @@ class ModernMenu(QModernMenu):
             self.addTab(Icon, Name)
 
     def createFileMenu(self):
-        self._QFileMenu.addButton(
-            title='Modern Settings',handler=Preferences.showPreferences)
-        fileMenu = ['File', 'Workbench', 'Macro', 'View', 'Structure']
+        fileMenu = ['File', 'Workbench', 'Macro']
         for toolbar in fileMenu:
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
             for button in TB[0].findChildren(QtWidgets.QToolButton):
@@ -76,6 +74,8 @@ class ModernMenu(QModernMenu):
                 self._QFileMenu.addButton(
                     icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip())
+        self._QFileMenu.addButton(
+            title='Modern Settings',handler=Preferences.showPreferences)
 
 
     def selectWorkbench(self):
