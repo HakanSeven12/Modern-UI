@@ -29,6 +29,7 @@ modernMenu = mv.findChild(QtWidgets.QWidget, "Modern Menu")
 import FreeCADGui
 from menu.ModernMenu import QModernMenu
 from PySide2 import QtCore, QtGui, QtWidgets
+import Preferences
 mw = FreeCADGui.getMainWindow()
 
 class MenuDock(QtWidgets.QDockWidget):
@@ -49,16 +50,18 @@ class ModernMenu(QModernMenu):
         icon = QtGui.QIcon(":/icons/freecad")
         super(ModernMenu, self).__init__(icon, 'FreeCAD')
         self._tabBar.currentChanged.connect(self.selectWorkbench)
+        self._QFileMenu.addButton(title='Modern Menu Settings',handler=Preferences.showPreferences)
         self.createModernMenu()
         self.show()
 
     def createModernMenu(self):
+        EnabledList = Preferences.enabled
         WBList = FreeCADGui.listWorkbenches()
-        for WB in WBList:
-            if WB == 'NoneWorkbench': continue
-            Icon = self.getWBIcon(WBList[WB].Icon)
-            Name = WBList[WB].MenuText
-            self.actions[Name] = WB
+        for Enabled in EnabledList:
+            if Enabled == 'NoneWorkbench': continue
+            Icon = self.getWBIcon(WBList[Enabled].Icon)
+            Name = WBList[Enabled].MenuText
+            self.actions[Name] = Enabled
             self.Enabled[Name] = False
             self.addTab(Icon, Name)
 
