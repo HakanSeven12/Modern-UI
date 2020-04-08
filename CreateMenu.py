@@ -100,7 +100,7 @@ class ModernMenu(QModernMenu):
             for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
                 section.addButton(
-                    full=False, icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
+                    full=False, icon=button.icon(), title=button.text()+' ', handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
         self.Enabled[tabName] = True
 

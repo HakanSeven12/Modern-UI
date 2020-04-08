@@ -349,6 +349,7 @@ class QModernTab(QtWidgets.QWidget):
         self._mainLayout.addWidget(section)
         self._mainLayout.addWidget(vline)
         self._mainLayout.addStretch(1)
+        
 
         return section
 
@@ -405,9 +406,6 @@ class QModernSection(QtWidgets.QWidget):
         """
         QtWidgets.QWidget.__init__(self)
 
-        self._titleLabel = QtWidgets.QLabel(title)
-        self._titleLabel.setEnabled(False) # grays it out
-
         # self._mainLayout is inside masterLayout
         # so that changes to self._mainLayout won't
         # affect self._titleLabel
@@ -419,8 +417,10 @@ class QModernSection(QtWidgets.QWidget):
         masterLayout = QtWidgets.QVBoxLayout()
         masterLayout.setContentsMargins(0, 0, 0, 0)
         masterLayout.setSpacing(0)
-        masterLayout.addLayout(self._mainLayout)
-        masterLayout.addWidget(self._titleLabel, 0, Qt.AlignHCenter | Qt.AlignBottom)
+        self.groupBox = QtWidgets.QGroupBox(title)
+        self.groupBox.setLayout(self._mainLayout)
+        self.groupBox.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
+        masterLayout.addWidget(self.groupBox)
         self.setLayout(masterLayout)
 
     def _addWidget(self, widget, full=True):
@@ -578,11 +578,11 @@ class QModernSection(QtWidgets.QWidget):
         """
         Set the text of the title label
         """
-        self._titleLabel.setText(title)
+        self.groupBox.setText(title)
 
     def title(self):
         """
         Return the text of the title label
         """
-        return str(self._titleLabel.text())
+        return str(self.groupBox.text())
 
