@@ -26,11 +26,12 @@ mv = FreeCADGui.getMainWindow()
 modernMenu = mv.findChild(QtWidgets.QWidget, "Modern Menu")
 """
 
-import FreeCADGui
+import FreeCAD, FreeCADGui
 from menu.ModernMenu import QModernMenu
 from PySide2 import QtCore, QtGui, QtWidgets
-import Preferences
+from Preferences import Preferences
 mw = FreeCADGui.getMainWindow()
+p = FreeCAD.ParamGet("User parameter:BaseApp/ModernUI")
 
 class MenuDock(QtWidgets.QDockWidget):
 
@@ -54,8 +55,20 @@ class ModernMenu(QModernMenu):
         self.createFileMenu()
         self.show()
 
+    def getParameters(self):
+        # Get saved parameters.
+        enabled = p.GetString("Enabled")
+        enabled = enabled.split(",")
+        partially = p.GetString("Partially")
+        partially = partially.split(",")
+        unchecked = p.GetString("Unchecked")
+        unchecked = unchecked.split(",")
+        position = p.GetString("Position")
+        position = position.split(",")
+        return enabled
+
     def createModernMenu(self):
-        EnabledList = Preferences.enabled
+        EnabledList = self.getParameters()
         WBList = FreeCADGui.listWorkbenches()
         for Enabled in EnabledList:
             if Enabled == 'NoneWorkbench': continue
@@ -75,7 +88,7 @@ class ModernMenu(QModernMenu):
                     icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip())
         self._QFileMenu.addButton(
-            title='Modern Settings',handler=Preferences.showPreferences)
+            title='Modern Settings',handler=Preferences, statusTip='Set Modern Menu Preferences')
 
 
     def selectWorkbench(self):

@@ -419,7 +419,6 @@ class QModernSection(QtWidgets.QWidget):
         masterLayout.setSpacing(0)
         self.groupBox = QtWidgets.QGroupBox(title)
         self.groupBox.setLayout(self._mainLayout)
-        self.groupBox.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
         masterLayout.addWidget(self.groupBox)
         self.setLayout(masterLayout)
 
