@@ -1,14 +1,10 @@
 ## FreeCAD Modern-UI
 An alternative take on the default FreeCAD UI
 
+[![FreeCAD Modern UI](http://img.youtube.com/vi/7ruU8Fnd07M/0.jpg)](http://www.youtube.com/watch?v=7ruU8Fnd07M)
+
 ## Status
 Alpha
-
-![ScreenCast-Ribbon-Displayed](https://user-images.githubusercontent.com/3831435/78682773-1a329800-78f7-11ea-9570-2c789cf7fbe0.gif)  
-![ScreenCast-Ribbon-Collapse](https://user-images.githubusercontent.com/3831435/78682763-17d03e00-78f7-11ea-9454-e7cc2cf1f8b3.gif)
-
-![Static-Ribbon](https://user-images.githubusercontent.com/3831435/78682759-143cb700-78f7-11ea-9363-95e1fc99cc95.png)
-![Static-Ribbon-Larger-Icons](https://user-images.githubusercontent.com/3831435/78682762-156de400-78f7-11ea-8590-0af6633e86ca.png)
 
 ## Features
 * Auto-hide/hidden docks
@@ -32,8 +28,14 @@ git clone https://github.com/HakanSeven12/Modern-UI
 TBD
 ```
 
+## Uninstallation
+Copy 'Get Toolbars.FCMacro' file from FreeCAD/Mod/Modern-UI to FreeCAD/Macro.
+Delete Modern-UI folder from FreeCAD/Mod directory.
+Open FreeCAD and execute macro.
+Restart FreeCAD.
+
 ## Discussion
-Feel free to discuss this addon on its [dedicated FreeCAD forum thread]()
+Feel free to discuss this addon on its [Modern UI](https://forum.freecadweb.org/viewtopic.php?f=34&t=44937)
 
 ## License
 GPL v3.0 (see [LICENSE](LICENSE))
