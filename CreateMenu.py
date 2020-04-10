@@ -30,8 +30,11 @@ import FreeCAD, FreeCADGui
 from menu.ModernMenu import QModernMenu
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
+import os
+
 mw = FreeCADGui.getMainWindow()
 p = FreeCAD.ParamGet("User parameter:BaseApp/ModernUI")
+path = os.path.dirname(__file__) + "/Resources/icons/"
 
 class MenuDock(QtWidgets.QDockWidget):
 
@@ -88,7 +91,8 @@ class ModernMenu(QModernMenu):
                     icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip())
         self._QFileMenu.addButton(
-            title='Modern Settings',handler=Preferences, statusTip='Set Modern Menu Preferences')
+            icon= path+'Settings.svg', title='Modern Settings',handler=Preferences, 
+            statusTip='Set Modern Menu Preferences')
 
 
     def selectWorkbench(self):
