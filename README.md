@@ -1,7 +1,7 @@
 ## FreeCAD Modern-UI
 An alternative take on the default FreeCAD UI
 
-![Standart](https://user-images.githubusercontent.com/3831435/78682759-143cb700-78f7-11ea-9363-95e1fc99cc95.png)
+![ModerUI](https://user-images.githubusercontent.com/3831435/79041391-291b9200-7bf8-11ea-9e4e-1ddc7fe14889.png)
 
 Youtube Video: [FreeCAD Modern UI](http://www.youtube.com/watch?v=7ruU8Fnd07M)
 
