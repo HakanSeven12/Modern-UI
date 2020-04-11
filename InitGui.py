@@ -20,38 +20,9 @@
 # *                                                                     *
 # ***********************************************************************
 
-import sys
 import FreeCADGui
+import FCBinding
 
-def runModernUI(name):
-    disable = 0
-    dev = 1
-    
-    if name != "NoneWorkbench":
-        # Disablle after activation
-        mw = FreeCADGui.getMainWindow()
-        mw.workbenchActivated.disconnect(runModernUI)
-        if disable: return
-        print("ModernUI is enabled")
-        from dock import ModernDock
-        ModernDock.run()
-        
-        from PySide2 import QtCore, QtGui, QtWidgets
-        if dev:
-            from CreateMenu import MenuDock
-            mw.addDockWidget(
-                QtCore.Qt.TopDockWidgetArea, MenuDock())
-
-
-"""
-InitGui.py files are passing function and the runModernUI 
-wouldn't be visible outside. So need to be added to __main__
-"""
-
-import __main__
-__main__.runModernUI = runModernUI
-
-# When WB activated runModernUI() going to work
+# When WB activated run Modern UI
 mw = FreeCADGui.getMainWindow()
-mw.workbenchActivated.connect(runModernUI)
-
+mw.workbenchActivated.connect(FCBinding.run)
