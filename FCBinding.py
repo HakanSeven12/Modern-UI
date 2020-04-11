@@ -140,12 +140,6 @@ class ModernMenu(QModernMenu):
         """
         Import selected workbench toolbars to ModernMenu section.
         """
-
-        # Activate selected workbench
-        if tabName == 'FreeCAD': return
-        FreeCADGui.activateWorkbench(self.actions[tabName])
-        workbench = FreeCADGui.activeWorkbench()
-
         # Hide selected workbench toolbars
         for tbb in mw.findChildren(QtWidgets.QToolBar):
             tbb.hide()
@@ -156,6 +150,11 @@ class ModernMenu(QModernMenu):
         tabName = self._tabBar.tabText(index)
         if self.Enabled[tabName]: return
         tab = self._tabs[index]
+
+        # Activate selected workbench
+        if tabName == 'FreeCAD': return
+        FreeCADGui.activateWorkbench(self.actions[tabName])
+        workbench = FreeCADGui.activeWorkbench()
 
         # Import active workbench toolbars to menu sections
         for toolbar in workbench.listToolbars():
