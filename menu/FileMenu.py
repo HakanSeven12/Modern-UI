@@ -43,7 +43,7 @@ class QFileMenu(QtWidgets.QMenu):
     
     _arrowBtns = []
     _panels = []
-    _recentFilesMgr = None
+    _recentFilesMgr = QRecentFilesManager()
     _recentFilesText = 'Recent files'
     _shortcutAdded = QtCore.Signal()
     _shortcuts = []
@@ -55,6 +55,7 @@ class QFileMenu(QtWidgets.QMenu):
         """
         QtWidgets.QMenu.__init__(self)
         minHeight = 384
+        self._recentFilesMgr.pathAdded.connect(self._populateRecentFilesPanel)
 
         # Create a button widget
         btnWidget = QtWidgets.QFrame()
@@ -171,6 +172,8 @@ class QFileMenu(QtWidgets.QMenu):
         """
         Handle a user clicking a recent files entry
         """
+        print('click path')
+        print(path)
         self.recentFileClicked.emit(path)
 
     def _populateRecentFilesPanel(self):
@@ -198,7 +201,8 @@ class QFileMenu(QtWidgets.QMenu):
             sp = btn.sizePolicy()
             sp.setHorizontalPolicy(sp.Expanding)
             btn.setSizePolicy(sp)
-            btn.clicked.connect(lambda checked, patharg=p: self._handleRecentFileClick(patharg))
+            print(p)
+            btn.clicked.connect(lambda: self._handleRecentFileClick(p))
 
             # Create an icon
             pix = QtGui.QPixmap(16, 16)
@@ -344,8 +348,6 @@ class QFileMenu(QtWidgets.QMenu):
         """
         Return the QRecentFilesManager currently in use
         """
-        if self._recentFilesMgr == None:
-            self._recentFilesMgr = QRecentFilesManager()
         return self._recentFilesMgr
 
     def recentFilesText(self):
