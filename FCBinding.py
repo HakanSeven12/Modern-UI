@@ -110,10 +110,11 @@ class ModernMenu(QModernMenu):
             statusTip='Set Modern Menu Preferences')
         
         # Add recent files
+        self._QFileMenu.recentFileClicked.connect(self.openFile)
         fileList = self.getRecentFiles()
+        fileList.reverse()
         for file in fileList:
             self._QFileMenu._recentFilesMgr.addPath(file)
-            self._QFileMenu.recentFileClicked.connect(self.openFile)
 
     def getRecentFiles(self):
         """
@@ -131,6 +132,8 @@ class ModernMenu(QModernMenu):
         """
         Open given file in FreeCAD.
         """
+        print('open path')
+        print(path)
         try:
             FreeCAD.openDocument(path)
         except Exception:
@@ -165,10 +168,30 @@ class ModernMenu(QModernMenu):
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
             for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
+
+                styleParam = p.GetString("IconStyle")
+                if styleParam == "Text":
+                    iconStyle=None
+                    titleStyle=button.text()+' '
+                elif styleParam == "Icon":
+                    iconStyle=button.icon()
+                    titleStyle=None
+                else:
+                    iconStyle=button.icon()
+                    titleStyle=button.text()+' '
+
+                sizeParam = p.GetString("IconSize", "Small")
+                if sizeParam == "Small":
+                    size=False
+                else:
+                    size=True
+
                 section.addButton(
-                    full=False, icon=button.icon(), title=button.text()+' ', handler=button.defaultAction().triggered,
+                    full=size, icon=iconStyle, title=titleStyle, handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
         self.Enabled[tabName] = True
+        print('styleParam,sizeParam')
+        print(styleParam,sizeParam)
 
     def getWBIcon(self, icon):
         """
@@ -208,6 +231,7 @@ class run:
             mw = FreeCADGui.getMainWindow()
             mw.workbenchActivated.disconnect(run)
             if disable: return
-            ModernDock.run()
+            CollapsDock = p.GetString("CollapsibleDock", "On")
+            if CollapsDock == "On": ModernDock.run()
             mw.addDockWidget(
                 QtCore.Qt.TopDockWidgetArea, MenuDock())

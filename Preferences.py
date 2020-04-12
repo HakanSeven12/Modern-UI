@@ -46,7 +46,7 @@ class Preferences(QtWidgets.QDialog):
         selector = QtWidgets.QListWidget()
         selector.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
-        # Create Style options
+        # Create Button Style options
         iconRB = QtWidgets.QRadioButton("Icon")
         textRB = QtWidgets.QRadioButton("Text")
         iconTextRB = QtWidgets.QRadioButton("Icon and text")
@@ -54,32 +54,26 @@ class Preferences(QtWidgets.QDialog):
         styleLay.addWidget(iconRB)
         styleLay.addWidget(textRB)
         styleLay.addWidget(iconTextRB)
-        styleGB = QtWidgets.QGroupBox("Style:")
+        styleGB = QtWidgets.QGroupBox("Button Style:")
         styleGB.setLayout(styleLay)
         
-        # Create Orientation options
-        autoRB = QtWidgets.QRadioButton("Auto")
-        topRB = QtWidgets.QRadioButton("Top")
-        bottomRB = QtWidgets.QRadioButton("Bottom")
-        leftRB = QtWidgets.QRadioButton("Left")
-        rightRB = QtWidgets.QRadioButton("Right")
-        orientLay = QtWidgets.QVBoxLayout()
-        orientLay.addWidget(autoRB)
-        orientLay.addWidget(topRB)
-        orientLay.addWidget(bottomRB)
-        orientLay.addWidget(leftRB)
-        orientLay.addWidget(rightRB)
-        orientGB = QtWidgets.QGroupBox("Tab orientation:")
-        orientGB.setLayout(orientLay)
+        # Create Button Size options
+        smallRB = QtWidgets.QRadioButton("Small")
+        bigRB = QtWidgets.QRadioButton("Big")
+        sizeLay = QtWidgets.QVBoxLayout()
+        sizeLay.addWidget(smallRB)
+        sizeLay.addWidget(bigRB)
+        sizeGB = QtWidgets.QGroupBox("Button Size:")
+        sizeGB.setLayout(sizeLay)
 
         # Create Pref button options
         onRB = QtWidgets.QRadioButton("On")
         offRB = QtWidgets.QRadioButton("Off")
-        onOffLay = QtWidgets.QVBoxLayout()
-        onOffLay.addWidget(onRB)
-        onOffLay.addWidget(offRB)
-        prefBtnGB = QtWidgets.QGroupBox("Preferences button on tabbar:")
-        prefBtnGB.setLayout(onOffLay)
+        CollapsLay = QtWidgets.QVBoxLayout()
+        CollapsLay.addWidget(onRB)
+        CollapsLay.addWidget(offRB)
+        CollapsGB = QtWidgets.QGroupBox("Collapsible Docks:")
+        CollapsGB.setLayout(CollapsLay)
 
         # Create empty layout
         emptyLay = QtWidgets.QHBoxLayout()
@@ -88,8 +82,8 @@ class Preferences(QtWidgets.QDialog):
         # Create Preferences options group box
         prefLay = QtWidgets.QVBoxLayout()
         prefLay.addWidget(styleGB)
-        prefLay.addWidget(orientGB)
-        prefLay.addWidget(prefBtnGB)
+        prefLay.addWidget(sizeGB)
+        prefLay.addWidget(CollapsGB)
         prefLay.addStretch()
         prefLay.insertLayout(0, emptyLay)
 
@@ -142,12 +136,14 @@ class Preferences(QtWidgets.QDialog):
         for i in default:
             if i not in position:
                 position.append(i)
+
         for i in position:
             if i in self.actions:
                 item = QtWidgets.QListWidgetItem(selector)
                 item.setText(self.actions[i].text())
                 item.setIcon(self.actions[i].icon())
                 item.setData(32, self.actions[i].data())
+
                 if self.actions[i].data() in enabled:
                     item.setCheckState(QtCore.Qt.CheckState(2))
                     item.setData(50, "Checked")
@@ -161,26 +157,22 @@ class Preferences(QtWidgets.QDialog):
                     item.setCheckState(QtCore.Qt.CheckState(2))
                     item.setData(50, "Checked")
 
-        style = self.p.GetString("Style")
+        style = self.p.GetString("IconStyle")
         if style == "Text":
             textRB.setChecked(True)
-        elif style == "IconText":
-            iconTextRB.setChecked(True)
-        else:
+        elif style == "Icon":
             iconRB.setChecked(True)
-        orientation = self.p.GetString("Orientation")
-        if orientation == "North":
-            topRB.setChecked(True)
-        elif orientation == "South":
-            bottomRB.setChecked(True)
-        elif orientation == "West":
-            leftRB.setChecked(True)
-        elif orientation == "East":
-            rightRB.setChecked(True)
         else:
-            autoRB.setChecked(True)
-        prefbutton = self.p.GetString("PrefButton", "On")
-        if prefbutton == "On":
+            iconTextRB.setChecked(True)
+
+        size = self.p.GetString("IconSize")
+        if size == "Small":
+            smallRB.setChecked(True)
+        else:
+            bigRB.setChecked(True)
+
+        CollapsDock = self.p.GetString("CollapsibleDock")
+        if CollapsDock == "On":
             onRB.setChecked(True)
         else:
             offRB.setChecked(True)
@@ -189,13 +181,10 @@ class Preferences(QtWidgets.QDialog):
         iconRB.toggled.connect(self.onStyleChanged)
         textRB.toggled.connect(self.onStyleChanged)
         iconTextRB.toggled.connect(self.onStyleChanged)
-        autoRB.toggled.connect(self.onOrientChanged)
-        topRB.toggled.connect(self.onOrientChanged)
-        bottomRB.toggled.connect(self.onOrientChanged)
-        leftRB.toggled.connect(self.onOrientChanged)
-        rightRB.toggled.connect(self.onOrientChanged)
-        onRB.toggled.connect(self.onPrefChanged)
-        offRB.toggled.connect(self.onPrefChanged)
+        smallRB.toggled.connect(self.onSizeChanged)
+        bigRB.toggled.connect(self.onSizeChanged)
+        onRB.toggled.connect(self.onCollapsChanged)
+        offRB.toggled.connect(self.onCollapsChanged)
         upBtn.clicked.connect(self.onUpClicked)
         downBtn.clicked.connect(self.onDownClicked)
         selector.itemChanged.connect(self.onItemChanged)
@@ -203,8 +192,8 @@ class Preferences(QtWidgets.QDialog):
         closeBtn.clicked.connect(self.onAccepted)
 
         self.styleGB = styleGB
-        self.orientGB = orientGB
-        self.prefBtnGB = prefBtnGB
+        self.sizeGB = sizeGB
+        self.CollapsGB = CollapsGB
         self.selector = selector
 
     def workbenchIcon(self, i):
@@ -342,23 +331,22 @@ class Preferences(QtWidgets.QDialog):
         styleGB = self.styleGB
         for i in styleGB.findChildren(QtWidgets.QRadioButton):
             if i.isChecked():
-                self.p.SetString("Style", i.objectName())
+                self.p.SetString("IconStyle", i.text())
 
-
-    def onOrientChanged(self):
+    def onSizeChanged(self):
         """
         Set Modern Menu orientation.
         """
-        orientGB = self.orientGB
-        for i in orientGB.findChildren(QtWidgets.QRadioButton):
+        sizeGB = self.sizeGB
+        for i in sizeGB.findChildren(QtWidgets.QRadioButton):
             if i.isChecked():
-                self.p.SetString("Orientation", i.objectName())
+                self.p.SetString("IconSize", i.text())
 
-    def onPrefChanged(self):
+    def onCollapsChanged(self):
         """
         Set pref button.
         """
-        prefBtnGB = self.prefBtnGB
-        for i in prefBtnGB.findChildren(QtWidgets.QRadioButton):
+        CollapsGB = self.CollapsGB
+        for i in CollapsGB.findChildren(QtWidgets.QRadioButton):
             if i.isChecked():
-                self.p.SetString("PrefButton", i.objectName())
+                self.p.SetString("CollapsibleDock", i.text())

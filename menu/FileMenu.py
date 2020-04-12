@@ -187,22 +187,23 @@ class QFileMenu(QtWidgets.QMenu):
         if self._recentFilesMgr == None: pths = []
         else: pths = self._recentFilesMgr.paths()
         idx = 1
-        for p in pths:
+        print(pths)
+        for pth in pths:
+            if idx > 10: break
             # Pick a title string to use
-            title = p.split('/')[-1]
+            title = pth.split('/')[-1]
             
             # Create a toolbutton
             btn = QtWidgets.QToolButton()
             btn.setText(title)
-            btn.setToolTip(p)
+            btn.setToolTip(pth)
             btn.setAutoRaise(True)
             btn.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-            if idx <= 9: btn.setShortcut(str(idx))
+            btn.setShortcut(str(idx))
             sp = btn.sizePolicy()
             sp.setHorizontalPolicy(sp.Expanding)
             btn.setSizePolicy(sp)
-            print(p)
-            btn.clicked.connect(lambda: self._handleRecentFileClick(p))
+            btn.clicked.connect(lambda: self._handleRecentFileClick(pth))
 
             # Create an icon
             pix = QtGui.QPixmap(16, 16)
@@ -211,7 +212,7 @@ class QFileMenu(QtWidgets.QMenu):
             f = btn.font()
             f.setUnderline(True)
             ptr.setFont(f)
-            if idx <= 9: ptr.drawText(0, 12, '%d'%idx)
+            ptr.drawText(0, 12, '%d'%idx)
             del ptr
             btn.setIcon(QtGui.QIcon(pix))
             
