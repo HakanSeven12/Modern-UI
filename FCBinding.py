@@ -62,31 +62,6 @@ class ModernMenu(QModernMenu):
         self.createFileMenu()
         self.show()
 
-    def defaultWorkbenches(self):
-        """
-        Sorted string of available workbenches.
-        """
-        workbenches = FreeCADGui.listWorkbenches()
-        workbenches = list(workbenches)
-        workbenches.sort()
-        workbenches = ",".join(workbenches)
-        return workbenches
-
-    def getParameters(self):
-        """
-        Get saved parameters.
-        """
-        default = self.defaultWorkbenches()
-        enabled = p.GetString("Enabled", default)
-        enabled = enabled.split(",")
-        partially = p.GetString("Partially")
-        partially = partially.split(",")
-        unchecked = p.GetString("Unchecked")
-        unchecked = unchecked.split(",")
-        position = p.GetString("Position")
-        position = position.split(",")
-        return enabled
-
     def createModernMenu(self):
         """
         Create menu tabs.
@@ -95,7 +70,7 @@ class ModernMenu(QModernMenu):
         WBList = FreeCADGui.listWorkbenches()
         for Enabled in EnabledList:
             if Enabled == 'NoneWorkbench': continue
-            Icon = self.getWBIcon(WBList[Enabled].Icon)
+            Icon = self.getWorkbenchIcon(WBList[Enabled].Icon)
             Name = WBList[Enabled].MenuText
             self.actions[Name] = Enabled
             self.Enabled[Name] = False
@@ -150,6 +125,31 @@ class ModernMenu(QModernMenu):
         except Exception:
             print('File not found')
 
+    def defaultWorkbenches(self):
+        """
+        Sorted string of available workbenches.
+        """
+        workbenches = FreeCADGui.listWorkbenches()
+        workbenches = list(workbenches)
+        workbenches.sort()
+        workbenches = ",".join(workbenches)
+        return workbenches
+
+    def getParameters(self):
+        """
+        Get saved parameters.
+        """
+        default = self.defaultWorkbenches()
+        enabled = p.GetString("Enabled", default)
+        enabled = enabled.split(",")
+        partially = p.GetString("Partially")
+        partially = partially.split(",")
+        unchecked = p.GetString("Unchecked")
+        unchecked = unchecked.split(",")
+        position = p.GetString("Position")
+        position = position.split(",")
+        return enabled
+
     def selectWorkbench(self):
         """
         Import selected workbench toolbars to ModernMenu section.
@@ -158,7 +158,6 @@ class ModernMenu(QModernMenu):
         Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
         index = self._tabBar.currentIndex()
         tabName = self._tabBar.tabText(index)
-        if self.Enabled[tabName]: return
         tab = self._tabs[index]
 
         # Activate selected workbench
@@ -171,6 +170,7 @@ class ModernMenu(QModernMenu):
             tbb.hide()
 
         # Import active workbench toolbars to menu sections
+        if self.Enabled[tabName]: return
         for toolbar in workbench.listToolbars():
             if toolbar in Defaults: continue
             section = tab.addSection(toolbar)
@@ -204,7 +204,7 @@ class ModernMenu(QModernMenu):
         print('styleParam,sizeParam')
         print(styleParam,sizeParam)
 
-    def getWBIcon(self, icon):
+    def getWorkbenchIcon(self, icon):
         """
         Return workbench icon
         """
