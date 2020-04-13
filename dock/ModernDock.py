@@ -95,12 +95,10 @@ class ModernDock(QtCore.QObject):
             features = QtWidgets.QDockWidget.DockWidgetFeatures(
                 self.visible | QtWidgets.QDockWidget.DockWidgetVerticalTitleBar)
             dock.setFeatures(features)
-
-        try:
-            TBHeight = dock.style().pixelMetric(
-                QtWidgets.QStyle.PM_TitleBarHeight)
-        except:
-            TBHeight = 25
+        TBHeight = 25
+        # Segmantation fault
+        #TBHeight = dock.style().pixelMetric(
+        #       QtWidgets.QStyle.PM_TitleBarHeight)
         self.modifyDock(dock, TBHeight, TBHeight)
 
     def modifyDock(self, dock, width, height):
