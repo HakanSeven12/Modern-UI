@@ -157,7 +157,7 @@ class Preferences(QtWidgets.QDialog):
                     item.setCheckState(QtCore.Qt.CheckState(2))
                     item.setData(50, "Checked")
 
-        style = self.p.GetString("IconStyle")
+        style = self.p.GetString("IconStyle", "Icon and text")
         if style == "Text":
             textRB.setChecked(True)
         elif style == "Icon":
@@ -165,13 +165,13 @@ class Preferences(QtWidgets.QDialog):
         else:
             iconTextRB.setChecked(True)
 
-        size = self.p.GetString("IconSize")
+        size = self.p.GetString("IconSize", "Small")
         if size == "Small":
             smallRB.setChecked(True)
         else:
             bigRB.setChecked(True)
 
-        CollapsDock = self.p.GetString("CollapsibleDock")
+        CollapsDock = self.p.GetString("CollapsibleDock", "On")
         if CollapsDock == "On":
             onRB.setChecked(True)
         else:
