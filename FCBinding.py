@@ -62,11 +62,22 @@ class ModernMenu(QModernMenu):
         self.createFileMenu()
         self.show()
 
+    def defaultWorkbenches(self):
+        """
+        Sorted string of available workbenches.
+        """
+        workbenches = FreeCADGui.listWorkbenches()
+        workbenches = list(workbenches)
+        workbenches.sort()
+        workbenches = ",".join(workbenches)
+        return workbenches
+
     def getParameters(self):
         """
         Get saved parameters.
         """
-        enabled = p.GetString("Enabled")
+        default = self.defaultWorkbenches()
+        enabled = p.GetString("Enabled", default)
         enabled = enabled.split(",")
         partially = p.GetString("Partially")
         partially = partially.split(",")
@@ -169,7 +180,7 @@ class ModernMenu(QModernMenu):
             for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
 
-                styleParam = p.GetString("IconStyle")
+                styleParam = p.GetString("IconStyle", "Icon and text")
                 if styleParam == "Text":
                     iconStyle=None
                     titleStyle=button.text()+' '
