@@ -28,50 +28,37 @@ When the mouse moves towards them, they become visible.
 import FreeCADGui
 from PySide2 import QtCore, QtGui, QtWidgets
 
-mv = FreeCADGui.getMainWindow()
+mw = FreeCADGui.getMainWindow()
 
 class ModernDock(QtCore.QObject):
     side = False
     docked = True
-    AHEnable = 0
     target = None
-    AHD = None
 
-    def __init__(self, dock, AHD):
-        super(ModernDock, self).__init__(dock)
+    def __init__(self, dock):
+        super(ModernDock, self).__init__(mw)
+        mw.mainWindowClosed.connect(self.onClose)
         dock.installEventFilter(self)
-        AHD.installEventFilter(self)
         self.visible = dock.features()
         self.orgHeight = dock.sizeHint().height()
         self.orgWidth = dock.sizeHint().width()
-        area = mv.dockWidgetArea(dock)
+        area = mw.dockWidgetArea(dock)
         self.collapsedDock(dock, area)
         self.target = dock
-        self.AHD = AHD
 
     def eventFilter(self, source, event):
-        area = mv.dockWidgetArea(self.target)
-        if (source is self.AHD) and (event.type() is event.MouseButtonPress):
-            self.AHEnable = (self.AHEnable + 1) % 2
-
-            if self.AHEnable:
-                self.openDock(self.target)
-                self.target.removeEventFilter(self)
-            else:
-                self.collapsedDock(self.target, area)
-                self.target.installEventFilter(self)
-
-        elif source is self.target:
+        area = mw.dockWidgetArea(self.target)
+        if source is self.target:
             if (event.type() is event.Enter) or \
                 (self.target.isFloating() and self.docked):
-                for dockWid in mv.findChildren(QtWidgets.QDockWidget):
-                    if dockWid.isVisible and (mv.dockWidgetArea(dockWid) is area):
+                for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                    if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                         self.openDock(dockWid)
                 return True
 
             elif event.type() is event.Leave:
-                for dockWid in mv.findChildren(QtWidgets.QDockWidget):
-                    if dockWid.isVisible and (mv.dockWidgetArea(dockWid) is area):
+                for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                    if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                         self.collapsedDock(dockWid, area)
                 return True
 
@@ -109,13 +96,12 @@ class ModernDock(QtCore.QObject):
         dock.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-def run():
-    AHD = QtWidgets.QPushButton("AH")
-    mv.statusBar().addPermanentWidget(AHD)
-    mv.statusBar().setVisible(True)
+    def onClose(self):
+        self.deleteLater()
 
-    for dock in mv.findChildren(QtWidgets.QDockWidget):
-        ModernDock(dock, AHD)
+def run():
+    for dock in mw.findChildren(QtWidgets.QDockWidget):
+        ModernDock(dock)
 
         """
         title_bar = QtWidgets.QWidget()
