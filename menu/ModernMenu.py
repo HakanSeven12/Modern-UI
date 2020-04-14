@@ -50,7 +50,7 @@ class QModernMenu(QtWidgets.QWidget):
 
         # Create a tab bar
         self._tabBar = QtWidgets.QTabBar()
-        self._tabBar.setMovable(True)
+        #self._tabBar.setMovable(True)
         self._tabBar.setExpanding(False)
         self._tabBar.currentChanged.connect(self._currentTabChanged)
         self._tabBar.mousePressEvent = self._handleTabBarClick
@@ -80,11 +80,9 @@ class QModernMenu(QtWidgets.QWidget):
         tbLayout = QtWidgets.QGridLayout()
         tbLayout.setContentsMargins(0, 0, 0, 0)
         tbLayout.setSpacing(0)
-        tbLayout.addWidget(self._tabBar,  0, 0, 1, 2)
-        tbLayout.addWidget(self._minBtn,  0, 0)
-        tbLayout.addWidget(self._helpBtn, 0, 1)
-        tbLayout.setAlignment(self._minBtn,  Qt.AlignRight)
-        tbLayout.setAlignment(self._helpBtn, Qt.AlignRight)
+        tbLayout.addWidget(self._tabBar,  0, 0)
+        tbLayout.addWidget(self._minBtn,  0, 1)
+        tbLayout.addWidget(self._helpBtn, 0, 2)
         tbLayout.setColumnStretch(0, 1)
         tbWidget = QtWidgets.QWidget()
         tbWidget.setLayout(tbLayout)

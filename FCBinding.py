@@ -201,8 +201,6 @@ class ModernMenu(QModernMenu):
                     full=size, icon=iconStyle, title=titleStyle, handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
         self.Enabled[tabName] = True
-        print('styleParam,sizeParam')
-        print(styleParam,sizeParam)
 
     def getWorkbenchIcon(self, icon):
         """
