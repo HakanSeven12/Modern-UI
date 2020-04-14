@@ -161,6 +161,7 @@ class ModernMenu(QModernMenu):
         tab = self._tabs[index]
 
         # Activate selected workbench
+        if tabName[0]=='&': tabName = tabName[1:]
         if tabName == 'FreeCAD': return
         FreeCADGui.activateWorkbench(self.actions[tabName])
         workbench = FreeCADGui.activeWorkbench()
@@ -216,7 +217,7 @@ class ModernMenu(QModernMenu):
                 Icon.append((a
                             .split('"', 1)[1])
                             .rsplit('"', 1)[0])
-            Icon = QtGui.QIcon(QtGui.QPixmap(icon))
+            Icon = QtGui.QIcon(QtGui.QPixmap(Icon))
         else:
             Icon = QtGui.QIcon(QtGui.QPixmap(icon))
         if Icon.isNull():
