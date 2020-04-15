@@ -34,17 +34,60 @@ class ModernDock(QtCore.QObject):
     side = False
     docked = True
     target = None
+    autoHide = 1
 
     def __init__(self, dock):
-        super(ModernDock, self).__init__(mw)
+        super(ModernDock, self).__init__(dock)
+        self.setObjectName(dock.objectName()+"minMax")
         mw.mainWindowClosed.connect(self.onClose)
         dock.installEventFilter(self)
+        area = mw.dockWidgetArea(dock)
+
+        btnSize = QtCore.QSize(16, 16)
+        title = QtWidgets.QLabel(dock.windowTitle())
+        closeBtn = QtWidgets.QToolButton()
+        icon = dock.style().standardIcon(QtWidgets.QStyle.SP_TitleBarCloseButton)
+        closeBtn.setIcon( icon )
+        closeBtn.setFixedSize(btnSize)
+        closeBtn.clicked.connect(self.pin)
+        minimizeBtn = QtWidgets.QToolButton()
+        icon = dock.style().standardIcon(QtWidgets.QStyle.SP_TitleBarMinButton)
+        minimizeBtn.setIcon( icon )
+        minimizeBtn.setFixedSize(btnSize)
+        minimizeBtn.clicked.connect(self.minMax)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(title)
+        layout.addWidget(minimizeBtn)
+        layout.addWidget(closeBtn)
+        title_bar = QtWidgets.QWidget()
+        title_bar.setLayout(layout)
+        dock.setTitleBarWidget(title_bar)
+
         self.visible = dock.features()
         self.orgHeight = dock.sizeHint().height()
         self.orgWidth = dock.sizeHint().width()
-        area = mw.dockWidgetArea(dock)
         self.collapsedDock(dock, area)
         self.target = dock
+
+    def pin(self):
+        self.target.hide()
+
+    def minMax(self):
+        area = mw.dockWidgetArea(self.target)
+
+        if self.autoHide:
+            for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
+                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"minMax")
+                    self.openDock(dockWid)
+                    dockWid.removeEventFilter(object[0])
+        else:
+            for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
+                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"minMax")
+                    self.collapsedDock(dockWid, area)
+                    dockWid.installEventFilter(object[0])
+        self.autoHide = (self.autoHide + 1) % 2
 
     def eventFilter(self, source, event):
         area = mw.dockWidgetArea(self.target)
@@ -102,14 +145,3 @@ class ModernDock(QtCore.QObject):
 def run():
     for dock in mw.findChildren(QtWidgets.QDockWidget):
         ModernDock(dock)
-
-        """
-        title_bar = QtWidgets.QWidget()
-        layout = QtWidgets.QHBoxLayout()
-        title_bar.setLayout(layout)
-        button = QtWidgets.QToolButton()
-        layout.addWidget(button)
-        icon = dock.style().standardIcon(QtWidgets.QStyle.SP_TitleBarMaxButton, widget=dock)
-        button.setIcon( icon )
-        dock.setTitleBarWidget(title_bar)
-        """
