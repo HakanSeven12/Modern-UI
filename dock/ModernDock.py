@@ -27,7 +27,10 @@ When the mouse moves towards them, they become visible.
 
 import FreeCADGui
 from PySide2 import QtCore, QtGui, QtWidgets
+from menu.common import createButton
+import os
 
+path = os.path.dirname(__file__) + "/../Resources/icons/"
 mw = FreeCADGui.getMainWindow()
 
 class ModernDock(QtCore.QObject):
@@ -40,19 +43,22 @@ class ModernDock(QtCore.QObject):
         super(ModernDock, self).__init__(dock)
         self.setObjectName(dock.objectName()+"minMax")
         mw.mainWindowClosed.connect(self.onClose)
+        self.orgTitle = dock.titleBarWidget()
         dock.installEventFilter(self)
         area = mw.dockWidgetArea(dock)
+        self.visible = dock.features()
 
-        btnSize = QtCore.QSize(16, 16)
+        btnSize = QtCore.QSize(18, 18)
         title = QtWidgets.QLabel(dock.windowTitle())
         closeBtn = QtWidgets.QToolButton()
-        icon = dock.style().standardIcon(QtWidgets.QStyle.SP_TitleBarCloseButton)
-        closeBtn.setIcon( icon )
         closeBtn.setFixedSize(btnSize)
+        Icon = QtGui.QIcon(path+'Close.svg')
+        closeBtn.setIcon(Icon)
+        closeBtn.setIconSize(btnSize)
         closeBtn.clicked.connect(self.pin)
         minimizeBtn = QtWidgets.QToolButton()
-        icon = dock.style().standardIcon(QtWidgets.QStyle.SP_TitleBarMinButton)
-        minimizeBtn.setIcon( icon )
+        Icon = QtGui.QIcon(path+'Minimize.svg')
+        minimizeBtn.setIcon(Icon)
         minimizeBtn.setFixedSize(btnSize)
         minimizeBtn.clicked.connect(self.minMax)
         layout = QtWidgets.QHBoxLayout()
@@ -63,7 +69,6 @@ class ModernDock(QtCore.QObject):
         title_bar.setLayout(layout)
         dock.setTitleBarWidget(title_bar)
 
-        self.visible = dock.features()
         self.orgHeight = dock.sizeHint().height()
         self.orgWidth = dock.sizeHint().width()
         self.collapsedDock(dock, area)
@@ -122,10 +127,11 @@ class ModernDock(QtCore.QObject):
         if (area is QtCore.Qt.LeftDockWidgetArea) or \
             (area is QtCore.Qt.RightDockWidgetArea):
             self.side = True
+            dock.setTitleBarWidget = self.orgTitle
             features = QtWidgets.QDockWidget.DockWidgetFeatures(
                 self.visible | QtWidgets.QDockWidget.DockWidgetVerticalTitleBar)
             dock.setFeatures(features)
-        TBHeight = 25
+        TBHeight = 30
         # Segmantation fault
         #TBHeight = dock.style().pixelMetric(
         #       QtWidgets.QStyle.PM_TitleBarHeight)
