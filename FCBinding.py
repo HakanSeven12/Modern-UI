@@ -241,7 +241,7 @@ class run:
             mw = FreeCADGui.getMainWindow()
             mw.workbenchActivated.disconnect(run)
             if disable: return
-            CollapsDock = p.GetString("CollapsibleDock", "On")
-            if CollapsDock == "On": ModernDock.run()
             mw.addDockWidget(
                 QtCore.Qt.TopDockWidgetArea, MenuDock())
+            CollapsDock = p.GetString("CollapsibleDock", "On")
+            if CollapsDock == "On": ModernDock.run()
