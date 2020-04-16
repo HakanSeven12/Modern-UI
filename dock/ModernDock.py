@@ -52,12 +52,12 @@ class ModernDock(QtCore.QObject):
         title = QtWidgets.QLabel(dock.windowTitle())
         closeBtn = QtWidgets.QToolButton()
         closeBtn.setFixedSize(btnSize)
-        Icon = QtGui.QIcon(path+'Close.svg')
+        Icon = QtGui.QIcon(path+'Hide')
         closeBtn.setIcon(Icon)
         closeBtn.setIconSize(btnSize)
         closeBtn.clicked.connect(self.pin)
         minimizeBtn = QtWidgets.QToolButton()
-        Icon = QtGui.QIcon(path+'Maximize.svg')
+        Icon = QtGui.QIcon(path+'Pin')
         minimizeBtn.setIcon(Icon)
         minimizeBtn.setFixedSize(btnSize)
         minimizeBtn.clicked.connect(self.minMax)
@@ -86,7 +86,7 @@ class ModernDock(QtCore.QObject):
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                     object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"minMax")
-                    Icon = QtGui.QIcon(path+'Minimize.svg')
+                    Icon = QtGui.QIcon(path+'UnPin')
                     self.minimizeBtn.setIcon(Icon)
                     self.openDock(dockWid)
                     dockWid.setMinimumSize(0, 0)
@@ -96,7 +96,7 @@ class ModernDock(QtCore.QObject):
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                     object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"minMax")
-                    Icon = QtGui.QIcon(path+'Maximize.svg')
+                    Icon = QtGui.QIcon(path+'Pin')
                     self.orgHeight = dockWid.size().height()
                     self.orgWidth = dockWid.size().width()
                     self.minimizeBtn.setIcon(Icon)

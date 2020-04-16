@@ -95,12 +95,12 @@ class Preferences(QtWidgets.QDialog):
         # Create Up button
         upBtn = QtWidgets.QPushButton()
         upBtn.setToolTip("Move selected item up")
-        upBtn.setIcon(QtGui.QIcon(self.path + "TabBar_MoveUp"))
+        upBtn.setIcon(QtGui.QIcon(self.path + "MoveUp"))
         
         # Create Down button
         downBtn = QtWidgets.QPushButton()
         downBtn.setToolTip("Move selected item down")
-        downBtn.setIcon(QtGui.QIcon(self.path + "TabBar_MoveDown"))
+        downBtn.setIcon(QtGui.QIcon(self.path + "MoveDown"))
 
         # Create buttons layout
         btnLay = QtWidgets.QHBoxLayout()
