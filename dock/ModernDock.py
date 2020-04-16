@@ -89,14 +89,17 @@ class ModernDock(QtCore.QObject):
                     Icon = QtGui.QIcon(path+'Minimize.svg')
                     self.minimizeBtn.setIcon(Icon)
                     self.openDock(dockWid)
+                    dockWid.setMinimumSize(0, 0)
+                    dockWid.setMaximumSize(5000, 5000)
                     dockWid.removeEventFilter(object[0])
         else:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                     object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"minMax")
                     Icon = QtGui.QIcon(path+'Maximize.svg')
+                    self.orgHeight = dockWid.size().height()
+                    self.orgWidth = dockWid.size().width()
                     self.minimizeBtn.setIcon(Icon)
-                    self.collapsedDock(dockWid, area)
                     dockWid.installEventFilter(object[0])
         self.autoHide = (self.autoHide + 1) % 2
 
@@ -119,7 +122,6 @@ class ModernDock(QtCore.QObject):
         return super(ModernDock, self).eventFilter(source, event)
 
     def openDock(self, dock):
-        dock.setMaximumSize(5000, 5000)
         dock.setFeatures(self.visible)
         self.title.setText(dock.windowTitle())
         self.docked = False
@@ -129,13 +131,12 @@ class ModernDock(QtCore.QObject):
     def collapsedDock(self, dock, area):
         self.side = False
         self.docked = True
-        dock.setMaximumSize(5000, 5000)
 
         if (area is QtCore.Qt.LeftDockWidgetArea) or \
             (area is QtCore.Qt.RightDockWidgetArea):
             self.side = True
             dock.setTitleBarWidget = self.orgTitle
-            text = "\n".join(dock.windowTitle())
+            text = "\n".join(dock.windowTitle()) + " "
             self.title.setText(text)
             features = QtWidgets.QDockWidget.DockWidgetFeatures(
                 self.visible | QtWidgets.QDockWidget.DockWidgetVerticalTitleBar)
@@ -148,11 +149,12 @@ class ModernDock(QtCore.QObject):
 
     def modifyDock(self, dock, width, height):
         if self.side:
-            dock.setFixedWidth(width)
+            dock.setMinimumWidth(width-1)
+            dock.setMaximumWidth(width)
         else:
-            dock.setFixedHeight(height)
-        dock.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+            dock.setMinimumHeight(height-1)
+            dock.setMaximumHeight(height)
+
 
     def onClose(self):
         self.deleteLater()

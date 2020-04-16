@@ -69,12 +69,15 @@ class ModernMenu(QModernMenu):
         EnabledList = self.getParameters()
         WBList = FreeCADGui.listWorkbenches()
         for Enabled in EnabledList:
-            if Enabled == 'NoneWorkbench': continue
-            Icon = self.getWorkbenchIcon(WBList[Enabled].Icon)
-            Name = WBList[Enabled].MenuText
-            self.actions[Name] = Enabled
-            self.Enabled[Name] = False
-            self.addTab(Icon, Name)
+            try:
+                if Enabled == 'NoneWorkbench': continue
+                Icon = self.getWorkbenchIcon(WBList[Enabled].Icon)
+                Name = WBList[Enabled].MenuText
+                self.actions[Name] = Enabled
+                self.Enabled[Name] = False
+                self.addTab(Icon, Name)
+            except Exception:
+                pass
 
     def createFileMenu(self):
         """
