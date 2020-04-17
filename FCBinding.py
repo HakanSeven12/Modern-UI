@@ -164,7 +164,7 @@ class ModernMenu(QModernMenu):
         tab = self._tabs[index]
 
         # Activate selected workbench
-        if tabName[0]=='&': tabName = tabName[1:]
+        tabName = tabName.replace('&', '')
         if tabName == 'FreeCAD': return
         FreeCADGui.activateWorkbench(self.actions[tabName])
         workbench = FreeCADGui.activeWorkbench()
