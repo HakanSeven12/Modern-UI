@@ -110,12 +110,14 @@ class ModernDock(QtCore.QObject):
             if (event.type() is event.Enter) or \
                 (self.target.isFloating() and self.docked):
                 for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                    if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
                     if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                         self.openDock(dockWid)
                 return True
 
             elif event.type() is event.Leave:
                 for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                    if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
                     if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                         self.collapsedDock(dockWid, area)
                 return True
@@ -150,9 +152,11 @@ class ModernDock(QtCore.QObject):
         if self.side:
             dock.setMinimumWidth(width-1)
             dock.setMaximumWidth(width)
+            dock.setMaximumHeight(5000)
         else:
             dock.setMinimumHeight(height-1)
             dock.setMaximumHeight(height)
+            dock.setMaximumWidth(5000)
 
     def onClose(self):
         self.deleteLater()
@@ -160,5 +164,5 @@ class ModernDock(QtCore.QObject):
 def run():
     for dock in mw.findChildren(QtWidgets.QDockWidget):
         #if dock.windowTitle() == "Report view":continue
-        if dock.windowTitle() == "Modern Menu":continue
+        if dock.windowTitle().replace('&', '') == "Modern Menu":continue
         ModernDock(dock)

@@ -42,6 +42,9 @@ class MenuDock(QtWidgets.QDockWidget):
         self.setWindowTitle("Modern Menu")
         self.setTitleBarWidget(QtWidgets.QWidget())
         self.setWidget(ModernMenu())
+        self.setMinimumHeight(0)
+        sp = self.sizePolicy()
+        sp.setVerticalPolicy(QtWidgets.QSizePolicy.Ignored)
 
 
 class ModernMenu(QModernMenu):
