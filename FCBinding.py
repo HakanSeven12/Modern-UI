@@ -69,16 +69,16 @@ class ModernMenu(QModernMenu):
         """
         Create menu tabs.
         """
-        EnabledList = self.getParameters()
+        enabledList,positionList = self.getParameters()
         WBList = FreeCADGui.listWorkbenches()
-        for Enabled in EnabledList:
+        for position in positionList:
             try:
-                if Enabled == 'NoneWorkbench': continue
-                Icon = self.getWorkbenchIcon(WBList[Enabled].Icon)
-                Name = WBList[Enabled].MenuText
-                self.actions[Name] = Enabled
-                self.Enabled[Name] = False
-                self.addTab(Icon, Name)
+                if position in enabledList:
+                    Icon = self.getWorkbenchIcon(WBList[position].Icon)
+                    Name = WBList[position].MenuText
+                    self.actions[Name] = position
+                    self.Enabled[Name] = False
+                    self.addTab(Icon, Name)
             except Exception:
                 pass
 
@@ -154,7 +154,7 @@ class ModernMenu(QModernMenu):
         unchecked = unchecked.split(",")
         position = p.GetString("Position")
         position = position.split(",")
-        return enabled
+        return enabled, position
 
     def selectWorkbench(self):
         """
