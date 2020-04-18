@@ -38,17 +38,19 @@ class ModernDock(QtCore.QObject):
     docked = True
     target = None
     autoHide = 1
+    title = None
 
     def __init__(self, dock):
         super(ModernDock, self).__init__(dock)
         self.setObjectName(dock.objectName()+"pin")
         mw.mainWindowClosed.connect(self.onClose)
         dock.installEventFilter(self)
+        mw.installEventFilter(self)
         area = mw.dockWidgetArea(dock)
         self.visible = dock.features()
 
         btnSize = QtCore.QSize(16, 16)
-        title = QtWidgets.QLabel(dock.windowTitle())
+        self.title = QtWidgets.QLabel(dock.windowTitle())
         closeBtn = QtWidgets.QToolButton()
         closeBtn.setFixedSize(btnSize)
         Icon = QtGui.QIcon(path+'Hide')
@@ -61,7 +63,7 @@ class ModernDock(QtCore.QObject):
         minimizeBtn.setFixedSize(btnSize)
         minimizeBtn.clicked.connect(self.pin)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(title)
+        layout.addWidget(self.title)
         layout.addWidget(minimizeBtn)
         layout.addWidget(closeBtn)
         title_bar = QtWidgets.QWidget()
@@ -71,7 +73,6 @@ class ModernDock(QtCore.QObject):
         self.orgHeight = dock.sizeHint().height()
         self.orgWidth = dock.sizeHint().width()
         self.target = dock
-        self.title = title
         self.minimizeBtn = minimizeBtn
         self.collapsedDock(dock, area)
 
@@ -106,7 +107,15 @@ class ModernDock(QtCore.QObject):
 
     def eventFilter(self, source, event):
         area = mw.dockWidgetArea(self.target)
-        if source is self.target:
+
+        if source is mw and event.type() is event.ChildAdded:
+            if isinstance(event.child(), QtWidgets.QDockWidget):
+                for dockWid in mw.findChildren(QtWidgets.QDockWidget):
+                    if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
+                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")
+                    if not object: ModernDock(dockWid)
+
+        elif source is self.target:
             if (event.type() is event.Enter) or \
                 (self.target.isFloating() and self.docked):
                 for dockWid in mw.findChildren(QtWidgets.QDockWidget):
@@ -125,9 +134,9 @@ class ModernDock(QtCore.QObject):
 
     def openDock(self, dock):
         dock.setFeatures(self.visible)
-        if self.target == dock:
-            title = dock.windowTitle().replace('&', '')
-            self.title.setText(title)
+        object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
+        title = dock.windowTitle().replace('&', '')
+        object.title.setText(title)
         self.docked = False
         self.modifyDock(dock, self.orgWidth, self.orgHeight)
 
@@ -139,10 +148,10 @@ class ModernDock(QtCore.QObject):
         if (area is QtCore.Qt.LeftDockWidgetArea) or \
             (area is QtCore.Qt.RightDockWidgetArea):
             self.side = True
-            if self.target == dock:
-                text = dock.windowTitle().replace('&', '')
-                title = "\n".join(text) + " "
-                self.title.setText(title)
+            object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
+            text = dock.windowTitle().replace('&', '')
+            title = "\n".join(text) + " "
+            object.title.setText(title)
             features = QtWidgets.QDockWidget.DockWidgetFeatures(
                 self.visible | QtWidgets.QDockWidget.DockWidgetVerticalTitleBar)
             dock.setFeatures(features)
@@ -152,10 +161,12 @@ class ModernDock(QtCore.QObject):
         if self.side:
             dock.setMinimumWidth(width-1)
             dock.setMaximumWidth(width)
+            dock.setMinimumHeight(0)
             dock.setMaximumHeight(5000)
         else:
             dock.setMinimumHeight(height-1)
             dock.setMaximumHeight(height)
+            dock.setMinimumWidth(0)
             dock.setMaximumWidth(5000)
 
     def onClose(self):
