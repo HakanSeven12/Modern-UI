@@ -39,6 +39,7 @@ class ModernDock(QtCore.QObject):
     target = None
     autoHide = 1
     title = None
+    minimizeBtn = None
 
     def __init__(self, dock):
         super(ModernDock, self).__init__(dock)
@@ -50,7 +51,7 @@ class ModernDock(QtCore.QObject):
         self.visible = dock.features()
 
         btnSize = QtCore.QSize(16, 16)
-        self.title = QtWidgets.QLabel(dock.windowTitle())
+        title = QtWidgets.QLabel(dock.windowTitle())
         closeBtn = QtWidgets.QToolButton()
         closeBtn.setFixedSize(btnSize)
         Icon = QtGui.QIcon(path+'Hide')
@@ -63,7 +64,7 @@ class ModernDock(QtCore.QObject):
         minimizeBtn.setFixedSize(btnSize)
         minimizeBtn.clicked.connect(self.pin)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(self.title)
+        layout.addWidget(title)
         layout.addWidget(minimizeBtn)
         layout.addWidget(closeBtn)
         title_bar = QtWidgets.QWidget()
@@ -72,8 +73,9 @@ class ModernDock(QtCore.QObject):
 
         self.orgHeight = dock.sizeHint().height()
         self.orgWidth = dock.sizeHint().width()
-        self.target = dock
         self.minimizeBtn = minimizeBtn
+        self.target = dock
+        self.title = title
         self.collapsedDock(dock, area)
 
     def hide(self):
@@ -85,23 +87,23 @@ class ModernDock(QtCore.QObject):
         if self.autoHide:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")
+                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")[0]
                     Icon = QtGui.QIcon(path+'UnPin')
-                    self.minimizeBtn.setIcon(Icon)
+                    object.minimizeBtn.setIcon(Icon)
                     self.openDock(dockWid)
                     dockWid.setMinimumSize(0, 0)
                     dockWid.setMaximumSize(5000, 5000)
-                    try: dockWid.removeEventFilter(object[0])
+                    try: dockWid.removeEventFilter(object)
                     except Exception: pass
         else:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")
+                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")[0]
                     Icon = QtGui.QIcon(path+'Pin')
+                    object.minimizeBtn.setIcon(Icon)
                     self.orgHeight = dockWid.size().height()
                     self.orgWidth = dockWid.size().width()
-                    self.minimizeBtn.setIcon(Icon)
-                    try: dockWid.installEventFilter(object[0])
+                    try: dockWid.installEventFilter(object)
                     except Exception: pass
         self.autoHide = (self.autoHide + 1) % 2
 
@@ -114,6 +116,7 @@ class ModernDock(QtCore.QObject):
                     if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
                     object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")
                     if not object: ModernDock(dockWid)
+            return True
 
         elif source is self.target:
             if (event.type() is event.Enter) or \
@@ -130,6 +133,14 @@ class ModernDock(QtCore.QObject):
                     if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                         self.collapsedDock(dockWid, area)
                 return True
+        """
+        elif event.type() is QtCore.QEvent.User:
+            report = mw.findChildren(QtWidgets.QDockWidget, "Report view")[0]
+            msgType = event.messageType()
+            if msgType == ReportHighlighter.Error or msgType == ReportHighlighter.Warning:
+                self.openDock(report)
+            return True
+        """
         return super(ModernDock, self).eventFilter(source, event)
 
     def openDock(self, dock):

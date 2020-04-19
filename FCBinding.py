@@ -152,7 +152,7 @@ class ModernMenu(QModernMenu):
         partially = partially.split(",")
         unchecked = p.GetString("Unchecked")
         unchecked = unchecked.split(",")
-        position = p.GetString("Position")
+        position = p.GetString("Position", default)
         position = position.split(",")
         return enabled, position
 
