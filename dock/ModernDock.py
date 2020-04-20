@@ -45,6 +45,7 @@ class ModernDock(QtCore.QObject):
         super(ModernDock, self).__init__(dock)
         self.setObjectName(dock.objectName()+"pin")
         mw.mainWindowClosed.connect(self.onClose)
+        dock.topLevelChanged.connect(self.onChange)
         dock.installEventFilter(self)
         mw.installEventFilter(self)
         area = mw.dockWidgetArea(dock)
@@ -87,25 +88,37 @@ class ModernDock(QtCore.QObject):
         if self.autoHide:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")[0]
-                    Icon = QtGui.QIcon(path+'UnPin')
-                    object.minimizeBtn.setIcon(Icon)
-                    self.openDock(dockWid)
-                    dockWid.setMinimumSize(0, 0)
-                    dockWid.setMaximumSize(5000, 5000)
-                    try: dockWid.removeEventFilter(object)
-                    except Exception: pass
+                    self.enableCollapsing(dockWid)
         else:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                    object = mw.findChildren(QtCore.QObject, dockWid.objectName()+"pin")[0]
-                    Icon = QtGui.QIcon(path+'Pin')
-                    object.minimizeBtn.setIcon(Icon)
-                    self.orgHeight = dockWid.size().height()
-                    self.orgWidth = dockWid.size().width()
-                    try: dockWid.installEventFilter(object)
-                    except Exception: pass
+                    self.enableCollapsing(dockWid)
         self.autoHide = (self.autoHide + 1) % 2
+    
+    def onChange(self):
+        if self.autoHide and self.target.isFloating():
+            self.disableCollapsing(self.target)
+        else:
+            self.enableCollapsing(self.target)
+
+    def disableCollapsing(self, dock):
+        object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
+        Icon = QtGui.QIcon(path+'UnPin')
+        object.minimizeBtn.setIcon(Icon)
+        self.openDock(dock)
+        dock.setMinimumSize(0, 0)
+        dock.setMaximumSize(5000, 5000)
+        try: dock.removeEventFilter(object)
+        except Exception: pass
+        
+    def enableCollapsing(self, dock):
+        object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
+        Icon = QtGui.QIcon(path+'Pin')
+        object.minimizeBtn.setIcon(Icon)
+        self.orgHeight = dock.size().height()
+        self.orgWidth = dock.size().width()
+        try: dock.installEventFilter(object)
+        except Exception: pass
 
     def eventFilter(self, source, event):
         area = mw.dockWidgetArea(self.target)
@@ -124,14 +137,16 @@ class ModernDock(QtCore.QObject):
                 for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                     if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
                     if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                        self.openDock(dockWid)
+                        if dockWid.isFloating() == False:
+                            self.openDock(dockWid)
                 return True
 
             elif event.type() is event.Leave:
                 for dockWid in mw.findChildren(QtWidgets.QDockWidget):
-                    if dockWid.windowTitle().replace('&', '') == "Modern Menu":continue
+                    if dockWid.windowTitle().replace('&', '') == "Modern Menu": continue
                     if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                        self.collapsedDock(dockWid, area)
+                        if dockWid.isFloating() == False:
+                            self.collapsedDock(dockWid, area)
                 return True
         """
         elif event.type() is QtCore.QEvent.User:
