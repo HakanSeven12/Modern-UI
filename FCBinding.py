@@ -177,10 +177,18 @@ class ModernMenu(QModernMenu):
             tbb.hide()
 
         # Import active workbench toolbars to menu sections
+        NORParam = p.GetString("NumberOfRows", "3")
+        if NORParam == "3":
+            NOR = 3
+        elif NORParam == "4":
+            NOR = 4
+        else:
+            NOR = 5
+
         if self.Enabled[tabName]: return
         for toolbar in workbench.listToolbars():
             if toolbar in Defaults: continue
-            section = tab.addSection(toolbar)
+            section = tab.addSection(toolbar, NOR)
 
             # Import toolbars buttons to menu buttons
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)

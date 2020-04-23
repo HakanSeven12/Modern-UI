@@ -329,11 +329,11 @@ class QModernTab(QtWidgets.QWidget):
             for sh in sect._shortcuts: shortcuts.append(sh)
         return shortcuts
 
-    def addSection(self, title):
+    def addSection(self, title, numRow):
         """
         Add a QModernSection to the end
         """
-        section = QModernSection(title)
+        section = QModernSection(title, numRow)
         self._sections.append(section)
 
         section._shortcutAdded.connect(self._handleShortcutAdded)
@@ -397,8 +397,9 @@ class QModernSection(QtWidgets.QWidget):
     _widgetCol = 0
     _shortcutAdded = QtCore.Signal()
     _shortcuts = []
+    _rowNum = 3
     
-    def __init__(self, title):
+    def __init__(self, title, numRow):
         """
         Initialize the QModernSection
         """
@@ -407,6 +408,8 @@ class QModernSection(QtWidgets.QWidget):
         # self._mainLayout is inside masterLayout
         # so that changes to self._mainLayout won't
         # affect self._titleLabel
+
+        self._rowNum = numRow
 
         self._mainLayout = QtWidgets.QGridLayout()
         self._mainLayout.setContentsMargins(0, 0, 0, 0)
@@ -427,8 +430,8 @@ class QModernSection(QtWidgets.QWidget):
         # "full" is a bool specifying if this widget
         # should span all 3 layout rows or not.
 
-        rowspan = 3 if full else 1
-        if full and (self._widgetRow in [1, 2]):
+        rowspan = self._rowNum if full else 1
+        if full and (self._widgetRow in [1, self._rowNum-1]):
             self._widgetRow = 0
             self._widgetCol += 1
         self._mainLayout.addWidget(widget, self._widgetRow, self._widgetCol, rowspan, 1)
@@ -437,7 +440,7 @@ class QModernSection(QtWidgets.QWidget):
             self._widgetCol += 1
         else:
             self._widgetRow += 1
-            if self._widgetRow == 3:
+            if self._widgetRow == self._rowNum:
                 self._widgetRow = 0
                 self._widgetCol += 1
 

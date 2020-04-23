@@ -67,6 +67,17 @@ class Preferences(QtWidgets.QDialog):
         sizeGB.setLayout(sizeLay)
 
         # Create Pref button options
+        threeRB = QtWidgets.QRadioButton("3")
+        fourRB = QtWidgets.QRadioButton("4")
+        fiveRB = QtWidgets.QRadioButton("5")
+        rowNumLay = QtWidgets.QVBoxLayout()
+        rowNumLay.addWidget(threeRB)
+        rowNumLay.addWidget(fourRB)
+        rowNumLay.addWidget(fiveRB)
+        rowNumGB = QtWidgets.QGroupBox("Number of Rows:")
+        rowNumGB.setLayout(rowNumLay)
+
+        # Create Pref button options
         onRB = QtWidgets.QRadioButton("On")
         offRB = QtWidgets.QRadioButton("Off")
         CollapsLay = QtWidgets.QVBoxLayout()
@@ -83,6 +94,7 @@ class Preferences(QtWidgets.QDialog):
         prefLay = QtWidgets.QVBoxLayout()
         prefLay.addWidget(styleGB)
         prefLay.addWidget(sizeGB)
+        prefLay.addWidget(rowNumGB)
         prefLay.addWidget(CollapsGB)
         prefLay.addStretch()
         prefLay.insertLayout(0, emptyLay)
@@ -171,6 +183,14 @@ class Preferences(QtWidgets.QDialog):
         else:
             bigRB.setChecked(True)
 
+        numRow = self.p.GetString("NumberOfRows", "3")
+        if numRow == "3":
+            threeRB.setChecked(True)
+        elif numRow == "4":
+            fourRB.setChecked(True)
+        else:
+            fiveRB.setChecked(True)
+
         CollapsDock = self.p.GetString("CollapsibleDock", "On")
         if CollapsDock == "On":
             onRB.setChecked(True)
@@ -183,6 +203,9 @@ class Preferences(QtWidgets.QDialog):
         iconTextRB.toggled.connect(self.onStyleChanged)
         smallRB.toggled.connect(self.onSizeChanged)
         bigRB.toggled.connect(self.onSizeChanged)
+        threeRB.toggled.connect(self.onNORChanged)
+        fourRB.toggled.connect(self.onNORChanged)
+        fiveRB.toggled.connect(self.onNORChanged)
         onRB.toggled.connect(self.onCollapsChanged)
         offRB.toggled.connect(self.onCollapsChanged)
         upBtn.clicked.connect(self.onUpClicked)
@@ -193,6 +216,7 @@ class Preferences(QtWidgets.QDialog):
 
         self.styleGB = styleGB
         self.sizeGB = sizeGB
+        self.rowNumGB = rowNumGB
         self.CollapsGB = CollapsGB
         self.selector = selector
 
@@ -326,7 +350,7 @@ class Preferences(QtWidgets.QDialog):
 
     def onStyleChanged(self):
         """
-        Set Modern Menu style.
+        Set Modern Menu icon style.
         """
         styleGB = self.styleGB
         for i in styleGB.findChildren(QtWidgets.QRadioButton):
@@ -335,16 +359,25 @@ class Preferences(QtWidgets.QDialog):
 
     def onSizeChanged(self):
         """
-        Set Modern Menu orientation.
+        Set Modern Menu icon size.
         """
         sizeGB = self.sizeGB
         for i in sizeGB.findChildren(QtWidgets.QRadioButton):
             if i.isChecked():
                 self.p.SetString("IconSize", i.text())
 
+    def onNORChanged(self):
+        """
+        Set Modern Menu number of rows.
+        """
+        rowNumGB = self.rowNumGB
+        for i in rowNumGB.findChildren(QtWidgets.QRadioButton):
+            if i.isChecked():
+                self.p.SetString("NumberOfRows", i.text())
+
     def onCollapsChanged(self):
         """
-        Set pref button.
+        Set Modern Menu collapsible docks.
         """
         CollapsGB = self.CollapsGB
         for i in CollapsGB.findChildren(QtWidgets.QRadioButton):
