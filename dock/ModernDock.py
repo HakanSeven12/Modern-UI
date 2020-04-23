@@ -88,7 +88,7 @@ class ModernDock(QtCore.QObject):
         if self.autoHide:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
-                    self.enableCollapsing(dockWid)
+                    self.disableCollapsing(dockWid)
         else:
             for dockWid in mw.findChildren(QtWidgets.QDockWidget):
                 if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
