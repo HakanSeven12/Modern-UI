@@ -58,8 +58,8 @@ class ModernMenu(QModernMenu):
         """
         Constructor
         """
-        icon = QtGui.QIcon(":/icons/freecad")
-        super(ModernMenu, self).__init__(icon, 'FreeCAD')
+        icon = QtGui.QIcon(path + 'ModernUI')
+        super(ModernMenu, self).__init__(icon, 'Modern UI')
         self._tabBar.currentChanged.connect(self.selectWorkbench)
         self.createModernMenu()
         self.createFileMenu()
@@ -98,7 +98,7 @@ class ModernMenu(QModernMenu):
 
         # Add settings to file menu
         self._QFileMenu.addButton(
-            icon= path+'Settings.svg', title='Modern Settings',handler=Preferences, 
+            icon= path+'Settings', title='Modern Settings',handler=Preferences, 
             statusTip='Set Modern Menu Preferences')
         
         # Add recent files
