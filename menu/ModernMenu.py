@@ -454,7 +454,7 @@ class QModernSection(QtWidgets.QWidget):
         """
         Add a custom widget to the end
         """
-        self._addWidget(self, widget, full)
+        self._addWidget(widget, full)
 
     def addButton(self, full=False, icon=None, title=None, handler=None, shortcut=None, statusTip=None, menu=None):
         """
