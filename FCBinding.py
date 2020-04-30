@@ -176,7 +176,10 @@ class ModernMenu(QModernMenu):
         # Hide selected workbench toolbars
         for tbb in mw.findChildren(QtWidgets.QToolBar):
             tbb.hide()
-        draftutils.init_draft_statusbar.show_draft_statusbar()
+        try:
+            draftutils.init_draft_statusbar.show_draft_statusbar()
+        except Exception:
+            pass
 
         # Import active workbench toolbars to menu sections
         NORParam = p.GetString("NumberOfRows", "3")
