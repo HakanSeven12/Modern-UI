@@ -46,6 +46,10 @@ class ModernDock(QtCore.QObject):
         self.setObjectName(dock.objectName()+"pin")
         mw.mainWindowClosed.connect(self.onClose)
         dock.topLevelChanged.connect(self.onChange)
+        if dock.windowTitle().replace('&', '') == "Combo View":
+            tab = dock.findChildren(QtWidgets.QTabWidget,"combiTab")[0]
+            tab.currentChanged.connect(self.pin)
+
         dock.installEventFilter(self)
         mw.installEventFilter(self)
         area = mw.dockWidgetArea(dock)
