@@ -107,9 +107,9 @@ class ModernDock(QtCore.QObject):
         object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
         Icon = QtGui.QIcon(path+'UnPin')
         object.minimizeBtn.setIcon(Icon)
-        self.openDock(dock)
         dock.setMinimumSize(0, 0)
         dock.setMaximumSize(5000, 5000)
+        self.openDock(dock)
         try: dock.removeEventFilter(object)
         except Exception: pass
         
