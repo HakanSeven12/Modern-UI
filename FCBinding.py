@@ -64,7 +64,7 @@ class ModernMenu(QModernMenu):
         self._tabBar.currentChanged.connect(self.selectWorkbench)
         self.createModernMenu()
         self.createFileMenu()
-        self.show()
+        self.selectWorkbench(2)
 
     def createModernMenu(self):
         """
@@ -157,13 +157,14 @@ class ModernMenu(QModernMenu):
         position = position.split(",")
         return enabled, position
 
-    def selectWorkbench(self):
+    def selectWorkbench(self, index = None):
         """
         Import selected workbench toolbars to ModernMenu section.
         """
         # Get selected tab
         Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
-        index = self._tabBar.currentIndex()
+        if not index:
+            index = self._tabBar.currentIndex()
         tabName = self._tabBar.tabText(index)
         tab = self._tabs[index]
 

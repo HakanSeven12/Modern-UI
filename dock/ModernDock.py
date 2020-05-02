@@ -44,8 +44,13 @@ class ModernDock(QtCore.QObject):
     def __init__(self, dock):
         super(ModernDock, self).__init__(dock)
         self.setObjectName(dock.objectName()+"pin")
+
+        self.orgHeight = dock.sizeHint().height()
+        self.orgWidth = dock.sizeHint().width()
+
         mw.mainWindowClosed.connect(self.onClose)
         dock.topLevelChanged.connect(self.onChange)
+
         if dock.windowTitle().replace('&', '') == "Combo View":
             tab = dock.findChildren(QtWidgets.QTabWidget,"combiTab")[0]
             tab.currentChanged.connect(self.pin)
@@ -54,10 +59,8 @@ class ModernDock(QtCore.QObject):
         mw.installEventFilter(self)
         area = mw.dockWidgetArea(dock)
         self.visible = dock.features()
-        self.redesignTitlebar(dock)
 
-        self.orgHeight = dock.sizeHint().height()
-        self.orgWidth = dock.sizeHint().width()
+        self.redesignTitlebar(dock)
         self.collapsedDock(dock, area)
 
     def redesignTitlebar(self, dock):
@@ -107,9 +110,12 @@ class ModernDock(QtCore.QObject):
         object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")[0]
         Icon = QtGui.QIcon(path+'UnPin')
         object.minimizeBtn.setIcon(Icon)
-        dock.setMinimumSize(0, 0)
-        dock.setMaximumSize(5000, 5000)
         self.openDock(dock)
+        if dock.minimumWidth() < 300:
+            dock.setMinimumSize(self.orgWidth,0)
+        else:
+            dock.setMinimumSize(0, 0)
+        dock.setMaximumSize(5000, 5000)
         try: dock.removeEventFilter(object)
         except Exception: pass
         
