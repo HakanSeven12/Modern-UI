@@ -23,6 +23,7 @@
 import FreeCAD, FreeCADGui
 from menu.ModernMenu import QModernMenu
 from menu.FileMenu import QFileMenu, QFileMenuPanel
+from menu.RecentFilesManager import QRecentFilesManager
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
 from dock import ModernDock
@@ -89,25 +90,29 @@ class ModernMenu(QModernMenu):
         Add file, macro toolbars and settings to file menu and add recent files.
         """
         # Add file and macro toolbars to file menu
+        fileMenu = QFileMenu()
         menuBar = mw.findChildren(QtWidgets.QMenuBar)[0]
         for menu in menuBar.children():
             if isinstance(menu,QtWidgets.QMenu):
-                panel = QFileMenuPanel('Test')
+                panel = QFileMenuPanel(menu.title())
                 self.addPanels(panel, menu)
-                self._QFileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
+                fileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
                     handler=menu.defaultAction(), statusTip=menu.statusTip())
 
         # Add settings to file menu
-        self._QFileMenu.addButton(
+        fileMenu.addButton(
             icon= path+'Settings', title='Modern Settings',handler=Preferences, 
             statusTip='Set Modern Menu Preferences')
         
         # Add recent files
-        self._QFileMenu.recentFileClicked.connect(self.openFile)
+        fileMenu.recentFileClicked.connect(self.openFile)
         fileList = self.getRecentFiles()
         fileList.reverse()
+        RFManager = QRecentFilesManager()
         for file in fileList:
-            self._QFileMenu._recentFilesMgr.addPath(file)
+            RFManager.addPath(file)
+        fileMenu.setRecentFilesManager(RFManager)
+        self.setFileMenu(fileMenu)
 
     def addPanels(self, panel, menu):
         for act in menu.children():
