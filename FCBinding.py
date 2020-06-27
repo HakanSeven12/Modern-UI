@@ -22,6 +22,7 @@
 
 import FreeCAD, FreeCADGui
 from menu.ModernMenu import QModernMenu
+from menu.FileMenu import QFileMenu, QFileMenuPanel
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
 from dock import ModernDock
@@ -88,14 +89,13 @@ class ModernMenu(QModernMenu):
         Add file, macro toolbars and settings to file menu and add recent files.
         """
         # Add file and macro toolbars to file menu
-        fileMenu = ['File', 'Macro']
-        for toolbar in fileMenu:
-            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
-            for button in TB[0].findChildren(QtWidgets.QToolButton):
-                if button.text() == '': continue
-                self._QFileMenu.addButton(
-                    icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip())
+        menuBar = mw.findChildren(QtWidgets.QMenuBar)[0]
+        for menu in menuBar.children():
+            if isinstance(menu,QtWidgets.QMenu):
+                panel = QFileMenuPanel('Test')
+                self.addPanels(panel, menu)
+                self._QFileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
+                    handler=menu.defaultAction(), statusTip=menu.statusTip())
 
         # Add settings to file menu
         self._QFileMenu.addButton(
@@ -108,6 +108,20 @@ class ModernMenu(QModernMenu):
         fileList.reverse()
         for file in fileList:
             self._QFileMenu._recentFilesMgr.addPath(file)
+
+    def addPanels(self, panel, menu):
+        for act in menu.children():
+            if isinstance(act,QtWidgets.QMenu):
+                title = act.title()
+                shortcut = None
+                handler = menu.defaultAction()
+            else:
+                title = act.objectName()
+                shortcut = act.shortcut()
+                handler = act.triggered
+
+            panel.addButton(icon=act.icon(), title=title, handler=handler,
+            shortcut=shortcut, statusTip=act.statusTip())
 
     def getRecentFiles(self):
         """
