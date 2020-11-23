@@ -25,7 +25,6 @@ from menu.ModernMenu import QModernMenu
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
 from dock import ModernDock
-import draftutils
 import os
 
 mw = FreeCADGui.getMainWindow()
@@ -177,10 +176,6 @@ class ModernMenu(QModernMenu):
         # Hide selected workbench toolbars
         for tbb in mw.findChildren(QtWidgets.QToolBar):
             tbb.hide()
-        try:
-            draftutils.init_draft_statusbar.show_draft_statusbar()
-        except Exception:
-            pass
 
         # Import active workbench toolbars to menu sections
         NORParam = p.GetString("NumberOfRows", "3")
