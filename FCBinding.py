@@ -175,6 +175,7 @@ class ModernMenu(QModernMenu):
 
         # Hide selected workbench toolbars
         for tbb in mw.findChildren(QtWidgets.QToolBar):
+            if tbb.objectName() in ["draft_status_scale_widget", "draft_snap_widget"]: continue
             tbb.hide()
 
         # Import active workbench toolbars to menu sections
