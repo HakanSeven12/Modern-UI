@@ -25,13 +25,14 @@ This class makes by hides the FreeCAD docks (sidebars), by default.
 When the mouse moves towards them, they become visible.
 """
 
-import FreeCADGui
+import FreeCADGui,FreeCAD
 from PySide2 import QtCore, QtGui, QtWidgets
 from menu.common import createButton
 import os
 
-path = os.path.dirname(__file__) + "/../Resources/icons/"
 mw = FreeCADGui.getMainWindow()
+params = FreeCAD.ParamGet("User parameter:BaseApp/ModernUI")
+path = os.path.dirname(__file__) + "/../Resources/icons/"
 
 class ModernDock(QtCore.QObject):
     side = False
@@ -96,8 +97,10 @@ class ModernDock(QtCore.QObject):
             if dockWid.isVisible and (mw.dockWidgetArea(dockWid) is area):
                 if self.autoHide or dockWid.isFloating():
                     self.disableCollapsing(dockWid)
+                    params.SetString(self.objectName()+'status', 'True')
                 else:
                     self.enableCollapsing(dockWid)
+                    params.SetString(self.objectName()+'status', 'False')
         self.autoHide = (self.autoHide + 1) % 2
     
     def onChange(self):
@@ -214,3 +217,9 @@ def run():
         #if dock.windowTitle() == "Report view":continue
         if dock.windowTitle().replace('&', '') == "Modern Menu":continue
         ModernDock(dock)
+
+    for dock in mw.findChildren(QtWidgets.QDockWidget):
+        object = mw.findChildren(QtCore.QObject, dock.objectName()+"pin")
+        if object: 
+            pinned = params.GetString(object[0].objectName()+'status', 'False')
+            if pinned == 'True': object[0].pin()
