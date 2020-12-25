@@ -15,27 +15,26 @@ Alpha
 * small/large Ribbon menu icons 
 
 ## Installation
-Installs just like an external workbench.  
-Note: after installation, FreeCAD requires a restart.
+* Open **Tools** :arrow_forward: **Addon Manager**.
+* Select **ModernUI** and click `Install/update selected`.  
 
-### Linux and MacOSX
-
-```
-cd $HOME/.FreeCAD/Mod
-git clone https://github.com/HakanSeven12/Modern-UI
-```
-
-### Windows
-
-```
-TBD
-```
+* Restart FreeCAD.
 
 ## Uninstallation
-Copy 'Get Toolbars.FCMacro' file from FreeCAD/Mod/Modern-UI to FreeCAD/Macro.
-Delete Modern-UI folder from FreeCAD/Mod directory.
-Open FreeCAD and execute macro.
-Restart FreeCAD.
+* Create a macro.
+* Paste this code in to macro.
+```
+from PySide2 import QtCore, QtGui, QtWidgets
+mw = FreeCADGui.getMainWindow()
+
+WBList = FreeCADGui.listWorkbenches()
+for WB in WBList:
+    FreeCADGui.activateWorkbench(WB)
+    for tb in mw.findChildren(QtWidgets.QToolBar):
+        tb.show()
+```
+* Execute it.
+* Restart FreeCAD.
 
 ## Discussion
 Feel free to discuss this addon on its [Modern UI](https://forum.freecadweb.org/viewtopic.php?f=34&t=44937)
