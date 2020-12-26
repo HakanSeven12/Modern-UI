@@ -214,10 +214,10 @@ class ModernMenu(QModernMenu):
                 else:
                     size=True
 
-                section.addButton(
+                btn = section.addButton(
                     full=size, icon=iconStyle, title=titleStyle, handler=button.defaultAction().triggered,
                     shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
-                #section.addCustomWidget(button, full=False)
+                btn.setDefaultAction(button.defaultAction())
         self.Enabled[tabName] = True
 
     def getWorkbenchIcon(self, icon):
