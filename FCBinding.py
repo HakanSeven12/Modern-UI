@@ -199,14 +199,10 @@ class ModernMenu(QModernMenu):
 
                 styleParam = p.GetString("IconStyle", "Icon and text")
                 if styleParam == "Text":
-                    iconStyle=None
-                    titleStyle=button.text()+' '
+                    button.setIcon(QtGui.QIcon())
+
                 elif styleParam == "Icon":
-                    iconStyle=button.icon()
-                    titleStyle=None
-                else:
-                    iconStyle=button.icon()
-                    titleStyle=button.text()+' '
+                    button.setText('')
 
                 sizeParam = p.GetString("IconSize", "Small")
                 if sizeParam == "Small":
@@ -214,10 +210,9 @@ class ModernMenu(QModernMenu):
                 else:
                     size=True
 
-                btn = section.addButton(
-                    full=size, icon=iconStyle, title=titleStyle, handler=button.defaultAction().triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip(), menu=button.menu())
+                btn = section.addButton(full=size, menu=button.menu())
                 btn.setDefaultAction(button.defaultAction())
+
         self.Enabled[tabName] = True
 
     def getWorkbenchIcon(self, icon):
