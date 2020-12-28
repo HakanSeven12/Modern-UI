@@ -196,13 +196,14 @@ class ModernMenu(QModernMenu):
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
             for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
+                action = button.defaultAction()
 
                 styleParam = p.GetString("IconStyle", "Icon and text")
                 if styleParam == "Text":
-                    button.setIcon(QtGui.QIcon())
+                    action.setIcon(QtGui.QIcon())
 
                 elif styleParam == "Icon":
-                    button.setText('')
+                    action.setText('')
 
                 sizeParam = p.GetString("IconSize", "Small")
                 if sizeParam == "Small":
@@ -211,7 +212,7 @@ class ModernMenu(QModernMenu):
                     size=True
 
                 btn = section.addButton(full=size, menu=button.menu())
-                btn.setDefaultAction(button.defaultAction())
+                btn.setDefaultAction(action)
 
         self.Enabled[tabName] = True
 
