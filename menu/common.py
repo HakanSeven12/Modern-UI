@@ -34,7 +34,7 @@ Qt = QtCore.Qt
 
 
 
-def createButton(icon=None, title=None, handler=None, shortcut=None, statusTip=None):
+def createButton(icon=None, title='', handler=None, shortcut=None, statusTip=None, menu=None):
     """
     Create and return a QToolButton with the given options
     """
@@ -90,6 +90,11 @@ def createButton(icon=None, title=None, handler=None, shortcut=None, statusTip=N
     if statusTip != None:
         btn.setStatusTip(statusTip)
 
+    # menu
+    if menu != None:
+        btn.setMenu(menu)
+        btn.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+
     return btn
 
 
@@ -113,12 +118,3 @@ def createVertLine():
     f.setFrameStyle(QtWidgets.QFrame.VLine | QtWidgets.QFrame.Sunken)
     f.setEnabled(False)
     return f
-
-
-
-
-
-
-
-
-
