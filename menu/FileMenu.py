@@ -311,7 +311,7 @@ class QFileMenu(QtWidgets.QMenu):
 
         # Add it to self.arrowBtns, and set up a handler
         idx = self._dynContentStack.addWidget(panel)
-        arrowBtn.clicked.connect(lambda checked, idxarg=idx: self._handleArrowBtnClicked(checked, idxarg))
+        arrowBtn.clicked.connect(lambda checked=True, idxarg=idx: self._handleArrowBtnClicked(checked, idxarg))
 
         # Final setup
         L = QtWidgets.QHBoxLayout()
