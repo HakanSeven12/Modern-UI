@@ -89,25 +89,26 @@ class ModernMenu(QModernMenu):
         Add file, macro toolbars and settings to file menu and add recent files.
         """
         fileMenu = QFileMenu()
-        # Add file and macro toolbars to file menu
-        file_macro = ['File', 'Macro']
-        for toolbar in file_macro:
-            TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
-            for button in TB[0].findChildren(QtWidgets.QToolButton):
-                if button.text() == '': continue
-                action = button.defaultAction()
-                btn = fileMenu.addButton()
-                btn.setDefaultAction(action)
-
-        """
-        menuBar = mw.findChildren(QtWidgets.QMenuBar)[0]
+        menuBar = mw.menuBar()
         for menu in menuBar.children():
             if isinstance(menu,QtWidgets.QMenu):
-                panel = QFileMenuPanel(menu.title())
-                self.addPanels(panel, menu)
+                if menu.title() == '': continue
+                panel = QFileMenuPanel(menu.title()[1:])
                 fileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
                     handler=menu.defaultAction(), statusTip=menu.statusTip())
-        """
+
+                for action in menu.actions():
+                    if action.isSeparator():
+                        pass
+
+                    elif action.menu():
+                        title = action.text()
+                        btn = panel.addButton(icon=action.icon(), title=title, menu=action.menu())
+                        btn.setDefaultAction(action)
+
+                    else:
+                        btn = panel.addButton(title=action.text())
+                        btn.setDefaultAction(action)
 
         # Add settings to file menu
         fileMenu.addButton(
@@ -123,20 +124,6 @@ class ModernMenu(QModernMenu):
             RFManager.addPath(file)
         fileMenu.setRecentFilesManager(RFManager)
         self.setFileMenu(fileMenu)
-
-    def addPanels(self, panel, menu):
-        for act in menu.children():
-            if isinstance(act,QtWidgets.QMenu):
-                title = act.title()
-                shortcut = None
-                handler = menu.defaultAction()
-            else:
-                title = act.objectName()
-                shortcut = act.shortcut()
-                handler = act.triggered
-
-            panel.addButton(icon=act.icon(), title=title, handler=handler,
-            shortcut=shortcut, statusTip=act.statusTip())
 
     def getRecentFiles(self):
         """
