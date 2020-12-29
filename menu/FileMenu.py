@@ -424,11 +424,11 @@ class QFileMenuPanel(QtWidgets.QWidget):
         """
         button.click()
 
-    def addButton(self, icon=None, title='', handler=None, shortcut=None, statusTip=None):
+    def addButton(self, icon=None, title='', handler=None, shortcut=None, statusTip=None, menu=None):
         """
         Add a button to the bottom
         """
-        btn = createButton(icon, title, handler, shortcut, statusTip)
+        btn = createButton(icon, title, handler, shortcut, statusTip, menu)
         self._mainLayout.addWidget(btn)
         if shortcut != None:
             sh = QtWidgets.QShortcut(shortcut, self)
@@ -449,4 +449,3 @@ class QFileMenuPanel(QtWidgets.QWidget):
         Return the title
         """
         return str(self._titleLabel.text())
-
