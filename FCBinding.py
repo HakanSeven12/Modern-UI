@@ -22,6 +22,8 @@
 
 import FreeCAD, FreeCADGui
 from menu.ModernMenu import QModernMenu
+from menu.FileMenu import QFileMenu, QFileMenuPanel
+from menu.RecentFilesManager import QRecentFilesManager
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
 from dock import ModernDock
@@ -86,27 +88,55 @@ class ModernMenu(QModernMenu):
         """
         Add file, macro toolbars and settings to file menu and add recent files.
         """
+        fileMenu = QFileMenu()
         # Add file and macro toolbars to file menu
-        fileMenu = ['File', 'Macro']
-        for toolbar in fileMenu:
+        file_macro = ['File', 'Macro']
+        for toolbar in file_macro:
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
             for button in TB[0].findChildren(QtWidgets.QToolButton):
                 if button.text() == '': continue
-                self._QFileMenu.addButton(
-                    icon=button.icon(), title=button.text(), handler=button.defaultAction().triggered,
-                    shortcut=button.shortcut(), statusTip=button.statusTip())
+                action = button.defaultAction()
+                btn = fileMenu.addButton()
+                btn.setDefaultAction(action)
+
+        """
+        menuBar = mw.findChildren(QtWidgets.QMenuBar)[0]
+        for menu in menuBar.children():
+            if isinstance(menu,QtWidgets.QMenu):
+                panel = QFileMenuPanel(menu.title())
+                self.addPanels(panel, menu)
+                fileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
+                    handler=menu.defaultAction(), statusTip=menu.statusTip())
+        """
 
         # Add settings to file menu
-        self._QFileMenu.addButton(
+        fileMenu.addButton(
             icon= path+'Settings', title='Modern Settings',handler=Preferences, 
             statusTip='Set Modern Menu Preferences')
-        
+
         # Add recent files
-        self._QFileMenu.recentFileClicked.connect(self.openFile)
+        fileMenu.recentFileClicked.connect(self.openFile)
         fileList = self.getRecentFiles()
         fileList.reverse()
+        RFManager = QRecentFilesManager()
         for file in fileList:
-            self._QFileMenu._recentFilesMgr.addPath(file)
+            RFManager.addPath(file)
+        fileMenu.setRecentFilesManager(RFManager)
+        self.setFileMenu(fileMenu)
+
+    def addPanels(self, panel, menu):
+        for act in menu.children():
+            if isinstance(act,QtWidgets.QMenu):
+                title = act.title()
+                shortcut = None
+                handler = menu.defaultAction()
+            else:
+                title = act.objectName()
+                shortcut = act.shortcut()
+                handler = act.triggered
+
+            panel.addButton(icon=act.icon(), title=title, handler=handler,
+            shortcut=shortcut, statusTip=act.statusTip())
 
     def getRecentFiles(self):
         """
