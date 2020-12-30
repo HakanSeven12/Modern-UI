@@ -64,7 +64,6 @@ class ModernMenu(QModernMenu):
         super(ModernMenu, self).__init__(icon, 'Modern UI')
         self._tabBar.currentChanged.connect(self.selectWorkbench)
         self.createModernMenu()
-        self.createFileMenu()
         self.selectWorkbench(2)
 
     def createModernMenu(self):
@@ -88,26 +87,24 @@ class ModernMenu(QModernMenu):
         """
         Add file, macro toolbars and settings to file menu and add recent files.
         """
+        workbench = FreeCADGui.activeWorkbench()
+        menu_list = workbench.listMenus()
         fileMenu = QFileMenu()
         menuBar = mw.menuBar()
-        for menu in menuBar.children():
-            if isinstance(menu,QtWidgets.QMenu):
-                if menu.title() == '': continue
-                panel = QFileMenuPanel(menu.title()[1:])
-                fileMenu.addArrowButton(panel, icon=menu.icon(), title=menu.title(), 
-                    handler=menu.defaultAction(), statusTip=menu.statusTip())
+        for action in menuBar.actions():
+            if action.text() not in menu_list:continue
+            if action.isSeparator(): continue
 
-                for action in menu.actions():
-                    if action.isSeparator():
-                        pass
+            else:
+                panel = QFileMenuPanel(action.text())
+                panel.addButton(title=action.text())
+                fileMenu.addArrowButton(panel, icon=action.icon(), title=action.text())
 
-                    elif action.menu():
-                        title = action.text()
-                        btn = panel.addButton(icon=action.icon(), title=title, menu=action.menu())
-                        btn.setDefaultAction(action)
+                for action in action.menu().actions():
+                    if action.isSeparator(): continue
 
                     else:
-                        btn = panel.addButton(title=action.text())
+                        btn = panel.addButton()
                         btn.setDefaultAction(action)
 
         # Add settings to file menu
@@ -191,6 +188,8 @@ class ModernMenu(QModernMenu):
         workbench = FreeCADGui.activeWorkbench()
 
         # Hide selected workbench toolbars
+        mw.menuBar().hide()
+        self.createFileMenu()
         for tbb in mw.findChildren(QtWidgets.QToolBar):
             if tbb.objectName() in ["draft_status_scale_widget", "draft_snap_widget"]: continue
             tbb.hide()
