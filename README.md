@@ -26,6 +26,7 @@ Alpha
 ```
 from PySide2 import QtCore, QtGui, QtWidgets
 mw = FreeCADGui.getMainWindow()
+mw.menuBar().show()
 
 WBList = FreeCADGui.listWorkbenches()
 for WB in WBList:
