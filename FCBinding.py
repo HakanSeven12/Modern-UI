@@ -92,7 +92,7 @@ class ModernMenu(QModernMenu):
         fileMenu = QFileMenu()
         menuBar = mw.menuBar()
         for action in menuBar.actions():
-            if action.text() not in menu_list:continue
+            if action.data() not in menu_list:continue
             if action.isSeparator(): continue
 
             else:
