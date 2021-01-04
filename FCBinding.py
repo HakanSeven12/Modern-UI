@@ -140,8 +140,6 @@ class ModernMenu(QModernMenu):
         """
         Open given file in FreeCAD.
         """
-        print('open path')
-        print(path)
         try:
             FreeCAD.openDocument(path)
         except Exception:
@@ -163,13 +161,28 @@ class ModernMenu(QModernMenu):
         """
         default = self.defaultWorkbenches()
         enabled = p.GetString("Enabled", default)
-        enabled = enabled.split(",")
         partially = p.GetString("Partially")
-        partially = partially.split(",")
         unchecked = p.GetString("Unchecked")
-        unchecked = unchecked.split(",")
         position = p.GetString("Position", default)
+
+        enabled = enabled.split(",")
+        partially = partially.split(",")
+        unchecked = unchecked.split(",")
         position = position.split(",")
+
+        for i in [*FreeCADGui.listWorkbenches()]:
+            if i not in enabled and i not in partially\
+                and i not in unchecked:
+
+                if i in position:
+                    enabled.append(i)
+                else:
+                    enabled.append(i)
+                    position.append(i)
+
+        FreeCAD.Console.PrintMessage(enabled)
+        FreeCAD.Console.PrintMessage(position)
+
         return enabled, position
 
     def selectWorkbench(self, index = None):
