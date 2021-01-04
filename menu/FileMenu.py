@@ -172,8 +172,6 @@ class QFileMenu(QtWidgets.QMenu):
         """
         Handle a user clicking a recent files entry
         """
-        print('click path')
-        print(path)
         self.recentFileClicked.emit(path)
 
     def _populateRecentFilesPanel(self):
@@ -187,7 +185,6 @@ class QFileMenu(QtWidgets.QMenu):
         if self._recentFilesMgr == None: pths = []
         else: pths = self._recentFilesMgr.paths()
         idx = 1
-        print(pths)
         for pth in pths:
             if idx > 10: break
             # Pick a title string to use
