@@ -437,6 +437,9 @@ class QFileMenuPanel(QtWidgets.QWidget):
             self._shortcutAdded.emit()
         return btn
 
+    def addSeparator(self):
+        self._mainLayout.addWidget(createHorzLine())
+
     def setTitle(self, title):
         """
         Set the title
