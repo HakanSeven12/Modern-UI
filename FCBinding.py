@@ -93,21 +93,23 @@ class ModernMenu(QModernMenu):
         menuBar = mw.menuBar()
         for action in menuBar.actions():
             if action.data() not in menu_list:continue
-            if action.isSeparator(): continue
+            if action.isSeparator():
+                fileMenu.addSeparator()
 
             else:
-                panel = QFileMenuPanel(action.text())
-                panel.addButton(title=action.text())
+                panel = QFileMenuPanel(action.text().replace('&', ''))
                 fileMenu.addArrowButton(panel, icon=action.icon(), title=action.text())
 
                 for action in action.menu().actions():
-                    if action.isSeparator(): continue
+                    if action.isSeparator():
+                        panel.addSeparator()
 
                     else:
                         btn = panel.addButton()
                         btn.setDefaultAction(action)
 
         # Add settings to file menu
+        fileMenu.addSeparator()
         fileMenu.addButton(
             icon= path+'Settings', title='Modern Settings',handler=Preferences, 
             statusTip='Set Modern Menu Preferences')
