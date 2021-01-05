@@ -124,67 +124,6 @@ class ModernMenu(QModernMenu):
         fileMenu.setRecentFilesManager(RFManager)
         self.setFileMenu(fileMenu)
 
-    def getRecentFiles(self):
-        """
-        Return recent files list.
-        """
-        fileList = []
-        rf = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/RecentFiles")
-        rfcount = rf.GetInt("RecentFiles",0)
-        for i in range(rfcount):
-            filename = rf.GetString("MRU%d" % (i))
-            fileList.append(filename)
-        return fileList
-
-    def openFile(self, path):
-        """
-        Open given file in FreeCAD.
-        """
-        try:
-            FreeCAD.openDocument(path)
-        except Exception:
-            print('File not found')
-
-    def defaultWorkbenches(self):
-        """
-        Sorted string of available workbenches.
-        """
-        workbenches = FreeCADGui.listWorkbenches()
-        workbenches = list(workbenches)
-        workbenches.sort()
-        workbenches = ",".join(workbenches)
-        return workbenches
-
-    def getParameters(self):
-        """
-        Get saved parameters.
-        """
-        default = self.defaultWorkbenches()
-        enabled = p.GetString("Enabled", default)
-        partially = p.GetString("Partially")
-        unchecked = p.GetString("Unchecked")
-        position = p.GetString("Position", default)
-
-        enabled = enabled.split(",")
-        partially = partially.split(",")
-        unchecked = unchecked.split(",")
-        position = position.split(",")
-
-        for i in [*FreeCADGui.listWorkbenches()]:
-            if i not in enabled and i not in partially\
-                and i not in unchecked:
-
-                if i in position:
-                    enabled.append(i)
-                else:
-                    enabled.append(i)
-                    position.append(i)
-
-        FreeCAD.Console.PrintMessage(enabled)
-        FreeCAD.Console.PrintMessage(position)
-
-        return enabled, position
-
     def selectWorkbench(self, index = None):
         """
         Import selected workbench toolbars to ModernMenu section.
@@ -229,13 +168,6 @@ class ModernMenu(QModernMenu):
                 if button.text() == '': continue
                 action = button.defaultAction()
 
-                styleParam = p.GetString("IconStyle", "Icon and text")
-                if styleParam == "Text":
-                    action.setIcon(QtGui.QIcon())
-
-                elif styleParam == "Icon":
-                    action.setText('')
-
                 sizeParam = p.GetString("IconSize", "Small")
                 if sizeParam == "Small":
                     size=False
@@ -245,7 +177,39 @@ class ModernMenu(QModernMenu):
                 btn = section.addButton(full=size, menu=button.menu())
                 btn.setDefaultAction(action)
 
+                styleParam = p.GetString("IconStyle", "Icon and text")
+                if styleParam == "Text":
+                    btn.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
+
+                elif styleParam == "Icon":
+                    btn.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+
         self.Enabled[tabName] = True
+
+    def getParameters(self):
+        """
+        Get saved parameters.
+        """
+        workbench_list = [*FreeCADGui.listWorkbenches()]
+        workbenches = ",".join(workbench_list)
+        enabled = p.GetString("Enabled", workbenches)
+        partially = p.GetString("Partially")
+        unchecked = p.GetString("Unchecked")
+        position = p.GetString("Position", workbenches)
+
+        enabled = enabled.split(",")
+        partially = partially.split(",")
+        unchecked = unchecked.split(",")
+        position = position.split(",")
+
+        for i in workbench_list:
+            if i not in enabled and i not in partially and i not in unchecked: 
+                enabled.append(i)
+
+                if i not in position:
+                    position.append(i)
+
+        return enabled, position
 
     def getWorkbenchIcon(self, icon):
         """
@@ -267,6 +231,28 @@ class ModernMenu(QModernMenu):
         if Icon.isNull():
             Icon = QtGui.QIcon(":/icons/freecad")
         return Icon
+
+    def getRecentFiles(self):
+        """
+        Return recent files list.
+        """
+        fileList = []
+        rf = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/RecentFiles")
+        rfcount = rf.GetInt("RecentFiles",0)
+        for i in range(rfcount):
+            filename = rf.GetString("MRU%d" % (i))
+            fileList.append(filename)
+        return fileList
+
+    def openFile(self, path):
+        """
+        Open given file in FreeCAD.
+        """
+        try:
+            FreeCAD.openDocument(path)
+        except Exception:
+            print('File not found')
+
 
 
 
