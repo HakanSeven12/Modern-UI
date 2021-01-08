@@ -64,7 +64,7 @@ class ModernMenu(QModernMenu):
         super(ModernMenu, self).__init__(icon, 'Modern UI')
         self._tabBar.currentChanged.connect(self.selectWorkbench)
         self.createModernMenu()
-        self.selectWorkbench(2)
+        self.selectWorkbench()
 
     def createModernMenu(self):
         """
@@ -124,14 +124,15 @@ class ModernMenu(QModernMenu):
         fileMenu.setRecentFilesManager(RFManager)
         self.setFileMenu(fileMenu)
 
-    def selectWorkbench(self, index = None):
+    def selectWorkbench(self):
         """
         Import selected workbench toolbars to ModernMenu section.
         """
         # Get selected tab
-        Defaults = ['File', 'Workbench', 'Macro', 'View', 'Structure']
-        if not index:
-            index = self._tabBar.currentIndex()
+        Defaults = ['Workbench', 'View', 'Macro']
+        show = ['File', 'Structure']
+
+        index = self._tabBar.currentIndex()
         tabName = self._tabBar.tabText(index)
         tab = self._tabs[index]
 
@@ -181,7 +182,7 @@ class ModernMenu(QModernMenu):
                 if styleParam == "Text":
                     btn.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
 
-                elif styleParam == "Icon":
+                elif styleParam == "Icon" or toolbar in show:
                     btn.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
 
         self.Enabled[tabName] = True
