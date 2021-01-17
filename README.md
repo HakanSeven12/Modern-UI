@@ -21,8 +21,14 @@ Alpha
 * Restart FreeCAD.
 
 ## Uninstallation
+* Go to ModernUI tab.
+* Open **Tools** :arrow_forward: **Addon Manager**.
+* Select **Modern UI** and click `Uninstall selected`.
+* Restart FreeCAD.
+* When you restarted you don't see any toolbar.
 * Create a macro.
 * Paste this code in to macro.
+
 ```
 from PySide2 import QtCore, QtGui, QtWidgets
 mw = FreeCADGui.getMainWindow()
