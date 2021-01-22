@@ -88,6 +88,7 @@ class ModernMenu(QModernMenu):
         Add file, macro toolbars and settings to file menu and add recent files.
         """
         workbench = FreeCADGui.activeWorkbench()
+        if not hasattr(workbench,'__Workbench__'): return
         menu_list = workbench.listMenus()
         fileMenu = QFileMenu()
         menuBar = mw.menuBar()
@@ -159,6 +160,7 @@ class ModernMenu(QModernMenu):
             NOR = 5
 
         if self.Enabled[tabName]: return
+        if not hasattr(workbench,'__Workbench__'): return
         for toolbar in workbench.listToolbars():
             if toolbar in Defaults: continue
             section = tab.addSection(toolbar, NOR)
