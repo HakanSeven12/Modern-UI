@@ -144,7 +144,7 @@ class ModernMenu(QModernMenu):
         workbench = FreeCADGui.activeWorkbench()
 
         # Hide selected workbench toolbars
-        mw.menuBar().hide()
+        #mw.menuBar().hide()
         self.createFileMenu()
         for tbb in mw.findChildren(QtWidgets.QToolBar):
             if tbb.objectName() in ["draft_status_scale_widget", "draft_snap_widget"]: continue
