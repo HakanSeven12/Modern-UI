@@ -27,6 +27,7 @@ from menu.RecentFilesManager import QRecentFilesManager
 from PySide2 import QtCore, QtGui, QtWidgets
 from Preferences import Preferences
 from dock import ModernDock
+import webbrowser
 import os
 
 mw = FreeCADGui.getMainWindow()
@@ -112,6 +113,12 @@ class ModernMenu(QModernMenu):
         # Add settings to file menu
         fileMenu.addSeparator()
         fileMenu.addButton(
+            icon= path+'Patreon', title='Support Developer',handler=self.open_donation, 
+            statusTip='Set Modern Menu Preferences')
+
+        # Add settings to file menu
+        fileMenu.addSeparator()
+        fileMenu.addButton(
             icon= path+'Settings', title='Modern Settings',handler=Preferences, 
             statusTip='Set Modern Menu Preferences')
 
@@ -124,6 +131,9 @@ class ModernMenu(QModernMenu):
             RFManager.addPath(file)
         fileMenu.setRecentFilesManager(RFManager)
         self.setFileMenu(fileMenu)
+
+    def open_donation(self):
+        webbrowser.open('https://www.patreon.com/HakanSeven12')
 
     def selectWorkbench(self):
         """
@@ -163,7 +173,7 @@ class ModernMenu(QModernMenu):
         if not hasattr(workbench,'__Workbench__'): return
         for toolbar in workbench.listToolbars():
             if toolbar in Defaults: continue
-            section = tab.addSection(toolbar.replace(tabName+" ", "").capitalize(), NOR)
+            section = tab.addSection(toolbar, NOR)
 
             # Import toolbars buttons to menu buttons
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
