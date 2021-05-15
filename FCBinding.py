@@ -114,7 +114,7 @@ class ModernMenu(QModernMenu):
         fileMenu.addSeparator()
         fileMenu.addButton(
             icon= path+'Patreon', title='Support Developer',handler=self.open_donation, 
-            statusTip='Set Modern Menu Preferences')
+            statusTip='Support Hakan Seven to see more update on ModernUI')
 
         # Add settings to file menu
         fileMenu.addSeparator()
