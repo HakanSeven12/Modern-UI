@@ -173,7 +173,7 @@ class ModernMenu(QModernMenu):
         if not hasattr(workbench,'__Workbench__'): return
         for toolbar in workbench.listToolbars():
             if toolbar in Defaults: continue
-            section = tab.addSection(toolbar, NOR)
+            section = tab.addSection(toolbar.replace(tabName+" ", "").capitalize(), NOR)
 
             # Import toolbars buttons to menu buttons
             TB = mw.findChildren(QtWidgets.QToolBar, toolbar)
